@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#584140",
+                    "tertiary": "#003432",
+                    "background": "#f8f9ff",
+                    "tertiary-container": "#004c4a",
+                    "primary": "#003433",
+                    "inverse-on-surface": "#eaf1ff",
+                    "outline-variant": "#bfc8c7",
+                    "secondary-container": "#f9d8d6",
+                    "on-tertiary-container": "#7abcb8",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#82bbb9",
+                    "inverse-primary": "#97d1cf",
+                    "on-tertiary-fixed-variant": "#00504d",
+                    "surface-container-low": "#eff4ff",
+                    "on-primary-fixed-variant": "#0e4f4e",
+                    "surface-variant": "#d3e4fe",
+                    "surface-bright": "#f8f9ff",
+                    "on-primary": "#ffffff",
+                    "primary-container": "#084c4b",
+                    "primary-fixed": "#b3edeb",
+                    "surface-container-high": "#dce9ff",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed-dim": "#90d2ce",
+                    "surface-tint": "#2d6766",
+                    "surface-container-highest": "#d3e4fe",
+                    "on-primary-fixed": "#00201f",
+                    "surface": "#f8f9ff",
+                    "on-tertiary": "#ffffff",
+                    "primary-fixed-dim": "#97d1cf",
+                    "on-surface-variant": "#404848",
+                    "on-secondary-container": "#755d5b",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#abefeb",
+                    "secondary": "#715857",
+                    "on-surface": "#0b1c30",
+                    "on-secondary-fixed": "#281716",
+                    "on-background": "#0b1c30",
+                    "surface-dim": "#cbdbf5",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed": "#fcdbd9",
+                    "on-error": "#ffffff",
+                    "inverse-surface": "#213145",
+                    "outline": "#707978",
+                    "surface-container": "#e5eeff",
+                    "on-tertiary-fixed": "#00201f",
+                    "secondary-fixed-dim": "#dfbfbd",
+                    "error": "#ba1a1a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "1rem",
+                    "xl": "2rem",
+                    "lg": "1.5rem",
+                    "margin": "2rem",
+                    "gutter": "1.5rem",
+                    "unit": "4px",
+                    "xs": "0.25rem",
+                    "sm": "0.5rem"
+            },
+            "fontFamily": {
+                    "headline-md": ["Manrope"],
+                    "body-sm": ["Manrope"],
+                    "body-lg": ["Manrope"],
+                    "label-md": ["Manrope"],
+                    "body-md": ["Manrope"],
+                    "headline-lg": ["Manrope"],
+                    "display-xl": ["Manrope"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "display-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-auto-rows: minmax(120px, auto);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center w-full px-6 h-16 sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm font-manrope text-sm">
+<div class="flex items-center gap-6">
+<span class="text-xl font-bold text-teal-900"><div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined" data-weight="fill">pets</span>
+</div>
+<div>
+<h1 class="text-lg font-black text-teal-900 leading-none">Mass Mailer</h1>
+<p class="text-[10px] uppercase tracking-wider text-slate-500 font-bold mt-1">FELINE CARE</p>
+</div>
+</div></span>
+<div class="relative w-80">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="w-full bg-slate-50 border-none rounded-lg pl-10 pr-4 py-2 focus:ring-2 focus:ring-primary-container text-body-sm font-body-sm" placeholder="Search appointments or clients..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-3">
+<div class="text-right hidden sm:block">
+<p class="text-body-sm font-bold text-on-surface leading-none">Dr. Sarah Whiskers</p>
+<p class="text-[11px] font-medium text-on-surface-variant mt-1 uppercase tracking-wider">Vet Specialist</p>
+</div>
+<div class="h-9 w-9 rounded-full bg-slate-200 overflow-hidden border-2 border-primary-fixed-dim shadow-sm">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="close up professional headshot of a friendly veterinary clinic manager with a warm smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCelPYsLGDfMVz1sdPJOb7I99EqMrsuXhSOjf798sQGnnrcYSxAKvv_0GItqtZFGh3DJ6LowrJYaeZR4UyDlCA0-ob5aLx5Jg6pW-88ZFOYAO1yMTdINfyvdIwbN9WSnqY9VSDqUnCV85i5W5qaWm1yEc6TlFVWeByB7heUggWIn57BWb2voUu9vYyHnsXcN8wyp0hAofP7DWf4wP-iqxgBFm0FWDBvSn1QXh5dPl4D4PLpC4x2-QJu7_TpnRGULtCZRmx3H0XR92t1"/>
+</div>
+</div>
+</div>
+</header>
+<div class="flex min-h-screen">
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 h-full flex flex-col py-4 bg-slate-50 text-teal-900 font-manrope text-sm font-medium h-screen w-64 border-r border-slate-200 transition-all duration-200 ease-in-out z-40">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined" data-weight="fill">pets</span>
+</div>
+<div>
+<h2 class="text-lg font-black text-teal-900 leading-none">The Cat Desk</h2>
+<p class="text-[10px] uppercase tracking-wider text-slate-500 font-bold mt-1">Expert Caretaker</p>
+</div>
+</div>
+<div class="flex flex-col gap-1 px-3 flex-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:text-teal-700 hover:bg-slate-100 transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:text-teal-700 hover:bg-slate-100 transition-all" href="#">
+<span class="material-symbols-outlined">pets</span>
+<span class="">Client</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:text-teal-700 hover:bg-slate-100 transition-all" href="#">
+<span class="material-symbols-outlined">campaign</span>
+<span class="">Campaigns</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:text-teal-700 hover:bg-slate-100 transition-all" href="#">
+<span class="material-symbols-outlined">library_books</span>
+<span class="">Email Library</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:text-teal-700 hover:bg-slate-100 transition-all" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="">Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-teal-900 bg-teal-50 border-r-4 border-teal-700 font-semibold transition-all" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="">Calendar</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:text-teal-700 hover:bg-slate-100 transition-all" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="">Reports</span>
+</a>
+</div>
+<div class="flex flex-col gap-1 px-3 mt-auto mb-4">
+<div class="my-2 border-t border-slate-200 mx-4"></div>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:text-teal-700 hover:bg-slate-100 transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="">Settings</span>
+</a>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-1 ml-64 p-gutter max-w-[1664px]">
+<!-- Calendar Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Clinic Schedule</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">Manage appointments, email campaigns, and upcoming events.</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex bg-white rounded-xl border border-outline-variant p-1 shadow-sm">
+<button class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container font-semibold font-label-md text-label-md">Month</button>
+<button class="px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container font-medium font-label-md text-label-md">Week</button>
+<button class="px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container font-medium font-label-md text-label-md">Day</button>
+</div>
+<div class="flex items-center gap-2 bg-white rounded-xl border border-outline-variant px-3 py-2 shadow-sm">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container rounded-full p-1">chevron_left</button>
+<span class="font-headline-md text-headline-md px-2">October 2024</span>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container rounded-full p-1">chevron_right</button>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Main Grid Section -->
+<div class="col-span-12 lg:col-span-9">
+<div class="bg-white rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+<!-- Calendar Days Header -->
+<div class="grid grid-cols-7 bg-surface-container-low border-b border-outline-variant">
+<div class="py-3 text-center font-label-md text-label-md text-slate-500 uppercase tracking-widest">Sun</div>
+<div class="py-3 text-center font-label-md text-label-md text-slate-500 uppercase tracking-widest">Mon</div>
+<div class="py-3 text-center font-label-md text-label-md text-slate-500 uppercase tracking-widest">Tue</div>
+<div class="py-3 text-center font-label-md text-label-md text-slate-500 uppercase tracking-widest">Wed</div>
+<div class="py-3 text-center font-label-md text-label-md text-slate-500 uppercase tracking-widest">Thu</div>
+<div class="py-3 text-center font-label-md text-label-md text-slate-500 uppercase tracking-widest">Fri</div>
+<div class="py-3 text-center font-label-md text-label-md text-slate-500 uppercase tracking-widest">Sat</div>
+</div>
+<!-- Calendar Grid -->
+<div class="calendar-grid bg-slate-50">
+<!-- Week 1 (Partial) -->
+<div class="bg-surface-container-lowest p-3 border-r border-b border-outline-variant opacity-40">
+<span class="font-body-sm text-body-sm">29</span>
+</div>
+<div class="bg-surface-container-lowest p-3 border-r border-b border-outline-variant opacity-40">
+<span class="font-body-sm text-body-sm">30</span>
+</div>
+<!-- Oct 1 -->
+<div class="bg-white p-3 border-r border-b border-outline-variant hover:bg-slate-50 transition-colors">
+<span class="font-body-sm text-body-sm font-semibold">1</span>
+<div class="mt-2 space-y-1">
+<div class="text-[10px] bg-teal-50 text-teal-700 px-2 py-0.5 rounded-full border border-teal-200 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-weight="fill">campaign</span> Email: Deworming
+                                    </div>
+</div>
+</div>
+<div class="bg-white p-3 border-r border-b border-outline-variant hover:bg-slate-50 transition-colors">
+<span class="font-body-sm text-body-sm font-semibold">2</span>
+<div class="mt-2 space-y-1">
+<div class="text-[10px] bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full border border-pink-200 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-weight="fill">medical_services</span> Surgery: Luna (9AM)
+                                    </div>
+</div>
+</div>
+<div class="bg-white p-3 border-r border-b border-outline-variant hover:bg-slate-50 transition-colors">
+<span class="font-body-sm text-body-sm font-semibold">3</span>
+</div>
+<div class="bg-white p-3 border-r border-b border-outline-variant hover:bg-slate-50 transition-colors">
+<span class="font-body-sm text-body-sm font-semibold">4</span>
+<div class="mt-2 space-y-1">
+<div class="text-[10px] bg-tertiary-fixed text-on-tertiary-fixed-variant px-2 py-0.5 rounded-full border border-tertiary-container flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">celebration</span> Clinic Social Night
+                                    </div>
+</div>
+</div>
+<div class="bg-white p-3 border-b border-outline-variant hover:bg-slate-50 transition-colors">
+<span class="font-body-sm text-body-sm font-semibold">5</span>
+</div>
+<!-- Week 2 -->
+<div class="bg-white p-3 border-r border-b border-outline-variant hover:bg-slate-50 transition-colors">
+<span class="font-body-sm text-body-sm font-semibold">6</span>
+</div>
+<div class="bg-white p-3 border-r border-b border-outline-variant hover:bg-slate-50 transition-colors">
+<span class="font-body-sm text-body-sm font-semibold">7</span>
+<div class="mt-2 space-y-1">
+<div class="text-[10px] bg-primary-fixed text-on-primary-fixed-variant px-2 py-0.5 rounded-full border border-primary-container flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">vaccines</span> 3 Checkups
+                                    </div>
+</div>
+</div>
+<div class="bg-teal-50/30 p-3 border-r border-b border-outline-variant hover:bg-teal-50 transition-colors ring-2 ring-primary ring-inset">
+<span class="font-body-sm text-body-sm font-bold text-primary">8 (Today)</span>
+<div class="mt-2 space-y-1">
+<div class="text-[10px] bg-teal-600 text-white px-2 py-0.5 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-weight="fill">star</span> Staff Meeting
+                                    </div>
+<div class="text-[10px] bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full border border-pink-200 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">pets</span> 5 Grooming
+                                    </div>
+</div>
+</div>
+<div class="bg-white p-3 border-r border-b border-outline-variant hover:bg-slate-50 transition-colors">
+<span class="font-body-sm text-body-sm font-semibold">9</span>
+</div>
+<div class="bg-white p-3 border-r border-b border-outline-variant hover:bg-slate-50 transition-colors">
+<span class="font-body-sm text-body-sm font-semibold">10</span>
+<div class="mt-2 space-y-1">
+<div class="text-[10px] bg-teal-50 text-teal-700 px-2 py-0.5 rounded-full border border-teal-200 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-weight="fill">campaign</span> Follow-up SMS
+                                    </div>
+</div>
+</div>
+<div class="bg-white p-3 border-r border-b border-outline-variant hover:bg-slate-50 transition-colors">
+<span class="font-body-sm text-body-sm font-semibold">11</span>
+</div>
+<div class="bg-white p-3 border-b border-outline-variant hover:bg-slate-50 transition-colors">
+<span class="font-body-sm text-body-sm font-semibold">12</span>
+</div>
+<!-- Week 3 -->
+<div class="bg-white p-3 border-r border-b border-outline-variant hover:bg-slate-50 transition-colors">
+<span class="font-body-sm text-body-sm font-semibold">13</span>
+</div>
+<div class="bg-white p-3 border-r border-b border-outline-variant hover:bg-slate-50 transition-colors">
+<span class="font-body-sm text-body-sm font-semibold">14</span>
+</div>
+<div class="bg-white p-3 border-r border-b border-outline-variant hover:bg-slate-50 transition-colors">
+<span class="font-body-sm text-body-sm font-semibold">15</span>
+<div class="mt-2 space-y-1">
+<div class="text-[10px] bg-primary-fixed text-on-primary-fixed-variant px-2 py-0.5 rounded-full border border-primary-container flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">medical_information</span> Lab Results Sync
+                                    </div>
+</div>
+</div>
+<div class="bg-white p-3 border-r border-b border-outline-variant hover:bg-slate-50 transition-colors">
+<span class="font-body-sm text-body-sm font-semibold">16</span>
+<div class="h-12 border-l-2 border-primary-container ml-2 my-1 px-2 flex flex-col justify-center">
+<span class="text-[10px] font-bold text-primary">Boarding Peak</span>
+<span class="text-[9px] text-slate-500">12 Cats arriving</span>
+</div>
+</div>
+<div class="bg-white p-3 border-r border-b border-outline-variant hover:bg-slate-50 transition-colors">
+<span class="font-body-sm text-body-sm font-semibold">17</span>
+<div class="h-12 border-l-2 border-primary-container ml-2 my-1 px-2 flex flex-col justify-center">
+<span class="text-[10px] font-bold text-primary">Boarding Peak</span>
+</div>
+</div>
+<div class="bg-white p-3 border-r border-b border-outline-variant hover:bg-slate-50 transition-colors">
+<span class="font-body-sm text-body-sm font-semibold">18</span>
+<div class="h-12 border-l-2 border-primary-container ml-2 my-1 px-2 flex flex-col justify-center">
+<span class="text-[10px] font-bold text-primary">Boarding Peak</span>
+</div>
+</div>
+<div class="bg-white p-3 border-b border-outline-variant hover:bg-slate-50 transition-colors">
+<span class="font-body-sm text-body-sm font-semibold">19</span>
+</div>
+<!-- Remaining Grid simplified for UI context -->
+<div class="bg-white p-3 border-r border-b border-outline-variant"><span class="font-body-sm text-body-sm font-semibold">20</span></div>
+<div class="bg-white p-3 border-r border-b border-outline-variant"><span class="font-body-sm text-body-sm font-semibold">21</span></div>
+<div class="bg-white p-3 border-r border-b border-outline-variant"><span class="font-body-sm text-body-sm font-semibold">22</span></div>
+<div class="bg-white p-3 border-r border-b border-outline-variant"><span class="font-body-sm text-body-sm font-semibold">23</span></div>
+<div class="bg-white p-3 border-r border-b border-outline-variant"><span class="font-body-sm text-body-sm font-semibold">24</span></div>
+<div class="bg-white p-3 border-r border-b border-outline-variant"><span class="font-body-sm text-body-sm font-semibold">25</span></div>
+<div class="bg-white p-3 border-b border-outline-variant"><span class="font-body-sm text-body-sm font-semibold">26</span></div>
+<div class="bg-white p-3 border-r border-outline-variant"><span class="font-body-sm text-body-sm font-semibold">27</span></div>
+<div class="bg-white p-3 border-r border-outline-variant"><span class="font-body-sm text-body-sm font-semibold">28</span></div>
+<div class="bg-white p-3 border-r border-outline-variant"><span class="font-body-sm text-body-sm font-semibold">29</span></div>
+<div class="bg-white p-3 border-r border-outline-variant"><span class="font-body-sm text-body-sm font-semibold">30</span></div>
+<div class="bg-white p-3 border-r border-outline-variant"><span class="font-body-sm text-body-sm font-semibold">31</span></div>
+<div class="bg-surface-container-lowest p-3 border-r border-outline-variant opacity-40"><span class="font-body-sm text-body-sm">1</span></div>
+<div class="bg-surface-container-lowest p-3 opacity-40"><span class="font-body-sm text-body-sm">2</span></div>
+</div>
+</div>
+</div>
+<!-- Right Sidebar / Legend & Events -->
+<div class="col-span-12 lg:col-span-3 space-y-6">
+<!-- Event Creation Card -->
+<div class="bg-primary text-on-primary p-6 rounded-xl shadow-lg relative overflow-hidden">
+<div class="absolute -right-4 -bottom-4 w-24 h-24 bg-primary-container rounded-full opacity-50 blur-2xl"></div>
+<h3 class="font-headline-md text-headline-md mb-2">Schedule Activity</h3>
+<p class="text-on-primary/80 font-body-sm text-body-sm mb-6">Quickly add a new slot or campaign to your calendar.</p>
+<div class="space-y-2">
+<button class="w-full py-3 bg-white text-primary rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-teal-50 transition-colors">
+<span class="material-symbols-outlined">add_task</span>
+                                New Appointment
+                            </button>
+<button class="w-full py-3 bg-primary-container text-on-primary-container border border-primary-fixed/30 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary-container/80 transition-colors">
+<span class="material-symbols-outlined">mail</span>
+                                Email Campaign
+                            </button>
+</div>
+</div>
+<!-- Upcoming List -->
+<div class="bg-white border border-outline-variant rounded-xl p-5 shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline-md text-[18px] text-on-surface">Upcoming Today</h3>
+<span class="text-[10px] font-bold text-teal-600 bg-teal-50 px-2 py-1 rounded">3 EVENTS</span>
+</div>
+<div class="space-y-4">
+<div class="flex gap-3">
+<div class="w-1 bg-secondary rounded-full"></div>
+<div>
+<p class="text-body-sm font-bold text-on-surface">Dental Surgery: "Mochi"</p>
+<p class="text-[12px] text-slate-500">10:30 AM — Room 2</p>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="w-1 bg-primary rounded-full"></div>
+<div>
+<p class="text-body-sm font-bold text-on-surface">Annual Vaccinations (5)</p>
+<p class="text-[12px] text-slate-500">01:00 PM — Main Hall</p>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="w-1 bg-tertiary-container rounded-full"></div>
+<div>
+<p class="text-body-sm font-bold text-on-surface">Staff Training: New CRM</p>
+<p class="text-[12px] text-slate-500">04:30 PM — Office</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Calendar Legend -->
+<div class="bg-white border border-outline-variant rounded-xl p-5 shadow-sm">
+<h3 class="font-label-md text-label-md text-slate-500 uppercase tracking-widest mb-4">Legend</h3>
+<div class="space-y-3">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="w-4 h-4 rounded text-primary focus:ring-primary border-slate-300" type="checkbox"/>
+<span class="w-3 h-3 rounded-full bg-teal-600"></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-primary transition-colors">Campaigns</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="w-4 h-4 rounded text-secondary focus:ring-secondary border-slate-300" type="checkbox"/>
+<span class="w-3 h-3 rounded-full bg-secondary"></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-secondary transition-colors">Surgeries</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="w-4 h-4 rounded text-primary-container focus:ring-primary-container border-slate-300" type="checkbox"/>
+<span class="w-3 h-3 rounded-full bg-primary-container"></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-primary-container transition-colors">Checkups</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="w-4 h-4 rounded text-tertiary focus:ring-tertiary border-slate-300" type="checkbox"/>
+<span class="w-3 h-3 rounded-full bg-tertiary"></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-tertiary transition-colors">Clinic Events</span>
+</label>
+</div>
+</div>
+<!-- Marketing Insight Card -->
+<div class="bg-secondary-fixed text-on-secondary-fixed p-5 rounded-xl border border-secondary-container">
+<div class="flex items-start justify-between mb-3">
+<span class="material-symbols-outlined text-secondary">tips_and_updates</span>
+<span class="text-[10px] font-bold text-on-secondary-fixed-variant bg-white/50 px-2 py-0.5 rounded">CARE TIP</span>
+</div>
+<h4 class="font-bold text-body-md mb-1 text-on-secondary-fixed-variant">Fill Your Gap</h4>
+<p class="text-body-sm leading-snug text-on-secondary-fixed-variant/80 mb-4">You have 4 open slots this Thursday. Would you like to send a "Last Minute Discount" SMS to regular clients?</p>
+<button class="text-secondary font-bold text-body-sm flex items-center gap-1 hover:underline">
+                            Schedule Blast <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Dashboard Stats Bar (Bottom Anchor) -->
+<div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="bg-white p-4 rounded-xl border border-outline-variant flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-teal-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-teal-600">event_available</span>
+</div>
+<div>
+<p class="text-body-sm text-slate-500">Month Occupancy</p>
+<p class="font-headline-md text-headline-md">84%</p>
+</div>
+</div>
+<div class="bg-white p-4 rounded-xl border border-outline-variant flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-pink-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-pink-600">outbox</span>
+</div>
+<div>
+<p class="text-body-sm text-slate-500">Campaigns Sent</p>
+<p class="font-headline-md text-headline-md">12</p>
+</div>
+</div>
+<div class="bg-white p-4 rounded-xl border border-outline-variant flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-600">person_add</span>
+</div>
+<div>
+<p class="text-body-sm text-slate-500">New Patients</p>
+<p class="font-headline-md text-headline-md">28</p>
+</div>
+</div>
+<div class="bg-white p-4 rounded-xl border border-outline-variant flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-primary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-fixed-variant">payments</span>
+</div>
+<div>
+<p class="text-body-sm text-slate-500">Revenue Forecast</p>
+<p class="font-headline-md text-headline-md">$14.2k</p>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Floating Action Button - Contextually hidden as per rules for Details/Settings, but shown here as this is a primary dashboard view -->
+</body></html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#f9d8d6",
+                        "secondary": "#715857",
+                        "on-secondary-fixed-variant": "#584140",
+                        "on-surface-variant": "#404848",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-dim": "#cbdbf5",
+                        "on-tertiary-container": "#7abcb8",
+                        "surface-container-low": "#eff4ff",
+                        "secondary-fixed-dim": "#dfbfbd",
+                        "on-secondary-container": "#755d5b",
+                        "primary-fixed-dim": "#97d1cf",
+                        "on-tertiary-fixed-variant": "#00504d",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#fcdbd9",
+                        "surface-container": "#e5eeff",
+                        "primary-fixed": "#b3edeb",
+                        "on-secondary-fixed": "#281716",
+                        "on-primary-fixed-variant": "#0e4f4e",
+                        "inverse-primary": "#97d1cf",
+                        "tertiary-fixed": "#abefeb",
+                        "surface-container-highest": "#d3e4fe",
+                        "outline": "#707978",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#213145",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#90d2ce",
+                        "background": "#f8f9ff",
+                        "surface": "#f8f9ff",
+                        "tertiary": "#003432",
+                        "primary-container": "#084c4b",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#d3e4fe",
+                        "surface-tint": "#2d6766",
+                        "surface-container-high": "#dce9ff",
+                        "on-background": "#0b1c30",
+                        "on-primary-container": "#82bbb9",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#0b1c30",
+                        "primary": "#003433",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed": "#00201f",
+                        "tertiary-container": "#004c4a",
+                        "surface-bright": "#f8f9ff",
+                        "on-tertiary-fixed": "#00201f",
+                        "outline-variant": "#bfc8c7",
+                        "surface-container-lowest": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "1.5rem",
+                        "md": "1rem",
+                        "margin": "2rem",
+                        "unit": "4px",
+                        "sm": "0.5rem",
+                        "xs": "0.25rem",
+                        "xl": "2rem",
+                        "lg": "1.5rem"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Manrope"],
+                        "body-sm": ["Manrope"],
+                        "headline-md": ["Manrope"],
+                        "body-md": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "display-xl": ["Manrope"],
+                        "body-lg": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "display-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .active-tab { font-variation-settings: 'FILL' 1; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #bfc8c7; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #707978; }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased overflow-x-hidden" style="width: 1920px;">
+<!-- SideNavBar -->
+<aside class="flex flex-col w-64 fixed h-full z-50 overflow-y-auto bg-white border-r border-slate-200">
+<div class="px-6 py-8">
+<div class="flex items-center gap-3 mb-10">
+<div class="h-10 w-10 bg-primary-container rounded-lg flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined text-2xl" style='font-variation-settings: "FILL" 1;'>pets</span>
+</div>
+<div>
+<h1 class="font-black text-teal-900 text-lg uppercase tracking-wider">The Cat Desk</h1>
+<p class="text-xs text-slate-500 font-medium">Veterinary Marketing</p>
+</div>
+</div>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-slate-50 transition-all duration-200 font-manrope text-sm" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-slate-50 transition-all duration-200 font-manrope text-sm" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="">Client</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-slate-50 transition-all duration-200 font-manrope text-sm" href="#">
+<span class="material-symbols-outlined">campaign</span>
+<span class="">Campaigns</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-slate-50 transition-all duration-200 font-manrope text-sm" href="#">
+<span class="material-symbols-outlined">library_books</span>
+<span class="">Email Library</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-slate-50 transition-all duration-200 font-manrope text-sm" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="">Analytics</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-slate-50 transition-all duration-200 font-manrope text-sm" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="">Calendar</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-4 py-3 hover:bg-slate-50 transition-all duration-200 font-manrope text-sm" href="#">
+<span class="material-symbols-outlined">assessment</span>
+<span class="">Reports</span>
+</a>
+<a class="flex items-center gap-3 bg-teal-50 text-teal-800 font-bold border-r-4 border-teal-800 px-4 py-3 transition-all duration-200 font-manrope text-sm" href="#">
+<span class="material-symbols-outlined" style='font-variation-settings: "FILL" 1;'>settings</span>
+<span class="">Settings</span>
+</a>
+</nav>
+</div>
+</aside>
+<!-- Main Wrapper -->
+<div class="ml-64 min-h-screen">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-40 flex items-center justify-between px-8 h-16 w-full bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-slate-50 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary-container outline-none transition-all" placeholder="Search clinic data..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-3 pl-2">
+<div class="text-right">
+<p class="text-sm font-bold text-teal-900 leading-none">Admin Portal</p>
+<p class="text-[10px] text-slate-500 font-medium uppercase tracking-wider">The Cat Desk</p>
+</div>
+<img alt="User Profile Avatar" class="h-10 w-10 rounded-full object-cover border-2 border-primary-container/20" data-alt="A professional and friendly headshot of a female veterinary clinic manager in a light-filled, modern veterinary office. The background is softly blurred, showing clinical teal accents and clean white walls. She is smiling warmly, embodying an expert caretaker persona. The lighting is bright and high-key, maintaining a clean light-mode corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuApA1Ga8YbZ9RUUothPNOWxhCHWqps7RjMPjkyMjqmioYwzBbXlOWGOkSjXgmxN49UqJ5fyVfdVbZjWvJJ11e5OYJWEA6QffjVbiD9p__cRVT7bOpf2Mp6hYGLEVKCE4wW_BaMc2wHIDn0_s7MZkbZss2dz-4RKsbUMkT5j_cfaxH0uLW8VMVHIT2-YuU1pptG3BqTLgFXG9u73S_RcIlIEQmlnHCDtJk_qQNx4VCtAQ04C-XC_XlvlWvve2DiprkZGLDhxOpjmHuXW"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<main class="p-10 max-w-[1440px] mx-auto">
+<div class="mb-8">
+<h2 class="font-headline-lg text-headline-lg text-primary">Workspace Settings</h2>
+<p class="font-body-md text-body-md text-slate-500">Configure your veterinary clinic's hub, team members, and communication preferences.</p>
+</div>
+<!-- Bento Layout Grid -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Section 1: Clinic Profile -->
+<section class="col-span-8 bg-white rounded-xl border border-slate-200 p-8 shadow-sm">
+<div class="flex items-center justify-between mb-8">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-2xl">clinical_notes</span>
+<h3 class="font-headline-md text-headline-md text-teal-950">Clinic Profile</h3>
+</div>
+<button class="px-6 py-2 bg-primary text-white font-label-md text-label-md rounded-lg hover:opacity-90 transition-opacity">Save Changes</button>
+</div>
+<div class="flex gap-10">
+<div class="flex flex-col items-center gap-4">
+<div class="relative group">
+<div class="h-32 w-32 rounded-xl bg-slate-100 flex items-center justify-center border-2 border-dashed border-slate-300 overflow-hidden">
+<img alt="The Cat Desk Logo" class="w-full h-full object-cover" data-alt="A minimalist and professional veterinary clinic logo featuring a stylized cat silhouette integrated with a desk icon. The logo uses deep teal and soft pink colors on a clean white background. The image is presented as a high-resolution brand asset in a modern, corporate marketing suite environment with bright, natural lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtKcMoJcbZC1hVobZAx41VYUJsC23615dR3pCw8IVTYQapQT-CTaLNeP8cldg1jWQUgsiNgd4-4oytUUPyI9tSqvabZXjnLlFHawKC8LTPROjdbPSENFqvp1pbRnPRdM7RG_Mcwc1w1XjrK9PkksU0ZFPt2iE3brIKe8P0B4-RTrROpH3UpKT9kvx30ddM8IZj0Ze848JAOQVRTnQkzpT_tU2cVwVw193PjyVx5spUT-F7_FkkB4GrxPwbDI8XpqSdL3stIgPmfISt"/>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
+<span class="material-symbols-outlined text-white">upload</span>
+</div>
+</div>
+</div>
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Profile picture</p>
+</div>
+<div class="flex-1 grid grid-cols-2 gap-6">
+<div class="col-span-2 space-y-1.5">
+<label class="font-label-md text-label-md text-slate-600">Clinic Name</label>
+<input class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none font-body-md text-body-md transition-all" type="text" value="The Cat Desk"/>
+</div>
+<div class="space-y-1.5">
+<label class="font-label-md text-label-md text-slate-600">Contact Email</label>
+<input class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none font-body-md text-body-md transition-all" type="email" value="hello@thecatdesk.com"/>
+</div>
+<div class="space-y-1.5">
+<label class="font-label-md text-label-md text-slate-600">Phone Number</label>
+<input class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none font-body-md text-body-md transition-all" type="tel" value="+1 (555) 928-1029"/>
+</div>
+<div class="col-span-2 space-y-1.5">
+<label class="font-label-md text-label-md text-slate-600">Office Address</label>
+<textarea class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none font-body-md text-body-md transition-all resize-none" rows="3">122 Whisper Way, Feline Heights, NY 10012</textarea>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Email Configuration -->
+<section class="col-span-4 bg-white rounded-xl border border-slate-200 p-8 shadow-sm">
+<div class="flex items-center gap-3 mb-8">
+<span class="material-symbols-outlined text-primary text-2xl">mail</span>
+<h3 class="font-headline-md text-headline-md text-teal-950">Email Hub</h3>
+</div>
+<div class="space-y-6">
+<div class="space-y-1.5">
+<label class="font-label-md text-label-md text-slate-600">Sender Name</label>
+<input class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none font-body-md text-body-md transition-all" type="text" value="The Cat Desk Care Team"/>
+</div>
+<div class="space-y-1.5">
+<label class="font-label-md text-label-md text-slate-600">Reply-to Email</label>
+<input class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none font-body-md text-body-md transition-all" type="email" value="support@thecatdesk.com"/>
+</div>
+<div class="pt-4 border-t border-slate-100">
+<div class="flex items-center justify-between p-4 rounded-xl bg-teal-50/50 border border-teal-100">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-teal-600" style='font-variation-settings: "FILL" 1;'>verified</span>
+<div>
+<p class="font-label-md text-label-md text-teal-900">thecatdesk.com</p>
+<p class="text-[10px] text-teal-600 font-bold uppercase tracking-wider">Domain Verified</p>
+</div>
+</div>
+<button class="text-teal-700 hover:underline text-xs font-bold">Details</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: User Management -->
+<section class="col-span-8 bg-white rounded-xl border border-slate-200 p-0 shadow-sm overflow-hidden">
+<div class="flex items-center justify-between p-8 border-b border-slate-100">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-2xl">group</span>
+<h3 class="font-headline-md text-headline-md text-teal-950">User Management</h3>
+</div>
+<button class="flex items-center gap-2 px-5 py-2.5 bg-secondary-container text-secondary font-label-md text-label-md rounded-lg hover:bg-opacity-80 transition-all active:scale-95">
+<span class="material-symbols-outlined text-lg">add</span>
+                            Add User
+                        </button>
+</div>
+<table class="w-full">
+<thead class="bg-slate-50 border-b border-slate-100">
+<tr>
+<th class="px-8 py-4 text-left font-label-md text-label-md text-slate-500 uppercase tracking-wider">Staff Member</th>
+<th class="px-8 py-4 text-left font-label-md text-label-md text-slate-500 uppercase tracking-wider">Role</th>
+<th class="px-8 py-4 text-left font-label-md text-label-md text-slate-500 uppercase tracking-wider">Last Active</th>
+<th class="px-8 py-4 text-right font-label-md text-label-md text-slate-500 uppercase tracking-wider">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100">
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-8 py-4">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-primary-fixed-dim flex items-center justify-center text-primary-container font-bold">SW</div>
+<div>
+<p class="font-body-md text-body-md text-slate-900 font-semibold">Dr. Sarah Whiskers</p>
+<p class="text-xs text-slate-500">sarah.w@thecatdesk.com</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary-container/10 text-primary-container">Admin</span>
+</td>
+<td class="px-8 py-4 text-body-sm text-slate-500">2 mins ago</td>
+<td class="px-8 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-slate-400 hover:text-primary transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2 text-slate-400 hover:text-error transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-8 py-4">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-secondary-fixed flex items-center justify-center text-secondary font-bold">MV</div>
+<div>
+<p class="font-body-md text-body-md text-slate-900 font-semibold">Dr. Marcus Vane</p>
+<p class="text-xs text-slate-500">marcus.v@thecatdesk.com</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-600">Veterinarian</span>
+</td>
+<td class="px-8 py-4 text-body-sm text-slate-500">Yesterday, 4:12 PM</td>
+<td class="px-8 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-slate-400 hover:text-primary transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2 text-slate-400 hover:text-error transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-8 py-4">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-tertiary-fixed flex items-center justify-center text-tertiary font-bold">LL</div>
+<div>
+<p class="font-body-md text-body-md text-slate-900 font-semibold">Lila Lane</p>
+<p class="text-xs text-slate-500">lila.l@thecatdesk.com</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-600">Marketer</span>
+</td>
+<td class="px-8 py-4 text-body-sm text-slate-500">Oct 24, 2023</td>
+<td class="px-8 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-slate-400 hover:text-primary transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2 text-slate-400 hover:text-error transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<!-- Section 4: Notification Settings -->
+<section class="col-span-4 bg-white rounded-xl border border-slate-200 p-8 shadow-sm h-full flex flex-col">
+<div class="flex items-center gap-3 mb-8">
+<span class="material-symbols-outlined text-primary text-2xl">notifications_active</span>
+<h3 class="font-headline-md text-headline-md text-teal-950">Preferences</h3>
+</div>
+<div class="space-y-8 flex-1">
+<div class="flex items-center justify-between group">
+<div class="max-w-[80%]">
+<p class="font-label-md text-label-md text-slate-900">Campaign Success Alerts</p>
+<p class="text-xs text-slate-500">Get notified when a campaign hits target metrics.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+<div class="flex items-center justify-between group">
+<div class="max-w-[80%]">
+<p class="font-label-md text-label-md text-slate-900">New Client Registrations</p>
+<p class="text-xs text-slate-500">Real-time alerts for new patient sign-ups.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+<div class="flex items-center justify-between group">
+<div class="max-w-[80%]">
+<p class="font-label-md text-label-md text-slate-900">Weekly Performance Summary</p>
+<p class="text-xs text-slate-500">A detailed digest of all clinic activity.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+</div>
+<div class="mt-8 pt-8 border-t border-slate-100">
+<div class="p-4 rounded-xl bg-secondary-container/20 border border-secondary-container/40">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary">info</span>
+<div>
+<p class="font-label-md text-label-md text-secondary leading-tight mb-1">Clinic Growth Tips</p>
+<p class="text-xs text-secondary/80">Turn on summaries to receive AI-driven marketing tips based on your data.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Patient Progress Simulation (Component Glimpse) -->
+<section class="col-span-12 bg-white rounded-xl border border-slate-200 p-8 shadow-sm">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary text-2xl">auto_graph</span>
+<h3 class="font-headline-md text-headline-md text-teal-950">Workspace Health</h3>
+</div>
+<div class="grid grid-cols-4 gap-8">
+<div class="space-y-2">
+<div class="flex justify-between font-label-md text-label-md mb-1">
+<span class="text-slate-500 uppercase tracking-wider">Profile Completion</span>
+<span class="text-primary font-bold">92%</span>
+</div>
+<div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary-container to-secondary-container rounded-full" style="width: 92%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between font-label-md text-label-md mb-1">
+<span class="text-slate-500 uppercase tracking-wider">Team Capacity</span>
+<span class="text-primary font-bold">65%</span>
+</div>
+<div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary-container to-secondary-container rounded-full" style="width: 65%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between font-label-md text-label-md mb-1">
+<span class="text-slate-500 uppercase tracking-wider">Campaign Velocity</span>
+<span class="text-primary font-bold">88%</span>
+</div>
+<div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary-container to-secondary-container rounded-full" style="width: 88%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between font-label-md text-label-md mb-1">
+<span class="text-slate-500 uppercase tracking-wider">Data Verification</span>
+<span class="text-primary font-bold">100%</span>
+</div>
+<div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary-container to-secondary-container rounded-full" style="width: 100%"></div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+</body></html>
