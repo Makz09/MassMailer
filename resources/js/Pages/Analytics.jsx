@@ -1,15 +1,20 @@
 import AppLayout from '@/Layouts/AppLayout';
 import { Head } from '@inertiajs/react';
 
-export default function Analytics() {
+export default function Analytics({ metrics, engagementTrends, segmentation, recentCampaigns }) {
     return (
         <AppLayout>
             <Head title="Marketing Analytics" />
 
-            <div className="max-w-[1720px] mx-auto px-10 pt-6 pb-10 font-manrope">
+            <div className="max-w-[1720px] mx-auto px-10 pt-8 pb-10 font-manrope">
                 {/* Header Area */}
                 <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="space-y-1">
+                        <nav className="flex items-center gap-2 text-[10px] font-bold text-outline mb-2 uppercase tracking-[0.1em]">
+                            <span>Insights</span>
+                            <span className="material-symbols-outlined text-[12px]">chevron_right</span>
+                            <span className="text-primary-container">Data Analytics</span>
+                        </nav>
                         <h2 className="font-headline-lg text-headline-lg text-primary dark:text-teal-50 leading-none">Email Campaign Performance</h2>
                         <p className="font-body-md text-body-md text-slate-500 dark:text-slate-400 leading-relaxed">Deep dive into engagement metrics and patient conversion trends.</p>
                     </div>
@@ -31,36 +36,36 @@ export default function Analytics() {
                     <MetricBox 
                         icon="mail" 
                         label="Average Open Rate" 
-                        value="34.8%" 
+                        value={`${metrics.avgOpenRate}%`} 
                         trend="+12%" 
-                        progress={34.8} 
+                        progress={metrics.avgOpenRate} 
                         color="bg-primary"
                         iconBg="bg-teal-50 dark:bg-teal-900/20"
                     />
                     <MetricBox 
                         icon="ads_click" 
                         label="Click-Through Rate" 
-                        value="12.4%" 
+                        value={`${metrics.avgClickRate}%`} 
                         trend="+5.2%" 
-                        progress={12.4} 
+                        progress={metrics.avgClickRate} 
                         color="bg-secondary"
                         iconBg="bg-secondary-container dark:bg-pink-900/20"
                     />
                     <MetricBox 
                         icon="event_available" 
                         label="Appt. Conversion" 
-                        value="452" 
+                        value={metrics.totalBookings} 
                         trend="0.5%" 
                         isFlat
-                        sub="New bookings this month"
+                        sub="Total campaign bookings"
                         iconBg="bg-primary-container dark:bg-teal-900/40"
                     />
                     <MetricBox 
                         icon="group_add" 
-                        label="Audience Growth" 
-                        value="8,290" 
+                        label="Total Patients" 
+                        value={metrics.totalPatients} 
                         trend="+24%" 
-                        sub="Total active subscribers"
+                        sub="Total active patients"
                         iconBg="bg-tertiary-container dark:bg-teal-900/60"
                     />
                 </div>
@@ -72,37 +77,39 @@ export default function Analytics() {
                         <div className="flex justify-between items-center mb-8">
                             <div>
                                 <h3 className="font-headline-md text-headline-md text-primary dark:text-teal-100">Engagement Trends</h3>
-                                <p className="font-body-sm text-body-sm text-slate-500 dark:text-slate-400">Comparison of opens vs. clicks over the last 30 days</p>
+                                <p className="font-body-sm text-body-sm text-slate-500 dark:text-slate-400">Comparison of open and click rates across recent campaigns</p>
                             </div>
                             <div className="flex gap-4">
-                                <LegendItem color="bg-primary" label="Opens" />
-                                <LegendItem color="bg-secondary" label="Clicks" />
+                                <LegendItem color="bg-primary" label="Open Rate" />
+                                <LegendItem color="bg-secondary" label="Click Rate" />
                             </div>
                         </div>
-                        {/* Mock Chart */}
+                        {/* Real-time Chart */}
                         <div className="relative w-full h-64 flex items-end justify-between px-2 pt-4">
                             <div className="absolute inset-0 flex flex-col justify-between py-1">
                                 {[1,2,3,4].map(i => <div key={i} className="border-b border-slate-100 dark:border-slate-800 w-full h-0"></div>)}
                             </div>
-                            <ChartBar date="SEP 01" open={60} click={20} />
-                            <ChartBar date="SEP 05" open={45} click={15} />
-                            <ChartBar date="SEP 10" open={80} click={35} />
-                            <ChartBar date="SEP 15" open={70} click={25} />
-                            <ChartBar date="SEP 20" open={90} click={45} />
-                            <ChartBar date="SEP 25" open={65} click={20} />
-                            <ChartBar date="SEP 30" open={75} click={30} />
+                            {engagementTrends.length > 0 ? (
+                                engagementTrends.map((data, idx) => (
+                                    <ChartBar key={idx} date={data.date} open={data.open_rate} click={data.click_rate} />
+                                ))
+                            ) : (
+                                <div className="absolute inset-0 flex items-center justify-center text-slate-400 italic text-sm">No campaign data available yet.</div>
+                            )}
                         </div>
                     </div>
 
                     {/* Audience Segmentation */}
                     <div className="lg:col-span-4 bg-white dark:bg-slate-900 p-8 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
                         <h3 className="font-headline-md text-headline-md text-primary dark:text-teal-100 mb-2">Audience Segmentation</h3>
-                        <p className="font-body-sm text-body-sm text-slate-500 dark:text-slate-400 mb-8">Growth distribution by patient type</p>
+                        <p className="font-body-sm text-body-sm text-slate-500 dark:text-slate-400 mb-8">Patient distribution by breed</p>
                         <div className="space-y-6">
-                            <SegmentRow label="Domestic Short Hair" value="4,120" percent={52} color="bg-primary" />
-                            <SegmentRow label="Persian & Exotic" value="1,940" percent={24} color="bg-secondary" />
-                            <SegmentRow label="Maine Coon" value="1,050" percent={12} color="bg-teal-500" />
-                            <SegmentRow label="Other Breeds" value="1,180" percent={12} color="bg-slate-300 dark:bg-slate-700" />
+                            {segmentation.map((seg, idx) => (
+                                <SegmentRow key={idx} label={seg.label} value={seg.value} percent={seg.percent} color={idx % 2 === 0 ? 'bg-primary' : 'bg-secondary'} />
+                            ))}
+                            {segmentation.length === 0 && (
+                                <p className="text-slate-400 italic text-sm">No segmentation data found.</p>
+                            )}
                         </div>
                         <div className="mt-10 p-4 rounded-lg bg-slate-50 dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-700 flex items-center gap-4">
                             <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 border-2 border-white dark:border-slate-700 shadow-sm">
@@ -128,41 +135,31 @@ export default function Analytics() {
                                 <tr className="bg-slate-50/80 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">
                                     <th className="px-6 py-5 font-label-md text-label-md text-slate-500 dark:text-slate-400 uppercase tracking-wider">Campaign Name</th>
                                     <th className="px-6 py-5 font-label-md text-label-md text-slate-500 dark:text-slate-400 uppercase tracking-wider">Status</th>
-                                    <th className="px-6 py-5 font-label-md text-label-md text-slate-500 dark:text-slate-400 uppercase tracking-wider">Date Sent</th>
+                                    <th className="px-6 py-5 font-label-md text-label-md text-slate-500 dark:text-slate-400 uppercase tracking-wider">Date/Status</th>
                                     <th className="px-6 py-5 font-label-md text-label-md text-slate-500 dark:text-slate-400 uppercase tracking-wider">Opens</th>
                                     <th className="px-6 py-5 font-label-md text-label-md text-slate-500 dark:text-slate-400 uppercase tracking-wider">Clicks</th>
                                     <th className="px-6 py-5 font-label-md text-label-md text-slate-500 dark:text-slate-400 uppercase tracking-wider">Bookings</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                                <CampaignStatRow 
-                                    name="Autumn Dental Health Week" 
-                                    target="Target: All senior cats" 
-                                    status="Completed" 
-                                    date="Sept 24, 2023" 
-                                    opens="42.1%" 
-                                    clicks="15.8%" 
-                                    bookings={84} 
-                                />
-                                <CampaignStatRow 
-                                    name="Flea & Tick Prevention Reminder" 
-                                    target="Target: Seasonal subscribers" 
-                                    status="Completed" 
-                                    date="Sept 18, 2023" 
-                                    opens="38.5%" 
-                                    clicks="12.2%" 
-                                    bookings={126} 
-                                />
-                                <CampaignStatRow 
-                                    name="New Kitten Wellness Guide" 
-                                    target="Target: New patients (0-6mo)" 
-                                    status="Ongoing" 
-                                    date="Sept 10, 2023" 
-                                    opens="58.2%" 
-                                    clicks="24.5%" 
-                                    bookings={52} 
-                                    isOngoing
-                                />
+                                {recentCampaigns.map((camp, idx) => (
+                                    <CampaignStatRow 
+                                        key={idx}
+                                        name={camp.name} 
+                                        target={camp.target} 
+                                        status={camp.status} 
+                                        date={camp.date} 
+                                        opens={camp.opens} 
+                                        clicks={camp.clicks} 
+                                        bookings={camp.bookings} 
+                                        isOngoing={camp.isOngoing}
+                                    />
+                                ))}
+                                {recentCampaigns.length === 0 && (
+                                    <tr>
+                                        <td colSpan="6" className="px-6 py-12 text-center text-slate-400 italic">No campaigns found in history.</td>
+                                    </tr>
+                                )}
                             </tbody>
                         </table>
                     </div>

@@ -1,16 +1,21 @@
 import AppLayout from '@/Layouts/AppLayout';
 import MetricCard from '@/Components/MetricCard';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 
-export default function Dashboard({ stats = {}, recent_patients = [] }) {
+export default function Dashboard({ stats = {}, recent_patients = [], upcoming_campaigns = [] }) {
     return (
         <AppLayout>
             <Head title="Marketing Dashboard" />
             
-            <div className="px-10 pt-6 pb-10 mx-auto max-w-[1720px]">
+            <div className="max-w-[1720px] mx-auto px-10 pt-8 pb-10 font-manrope">
                 <header className="mb-10">
                     <div className="flex justify-between items-center w-full">
                         <div className="space-y-1">
+                            <nav className="flex items-center gap-2 text-[10px] font-bold text-outline mb-2 uppercase tracking-[0.1em]">
+                                <span>Main</span>
+                                <span className="material-symbols-outlined text-[12px]">chevron_right</span>
+                                <span className="text-primary-container">Dashboard</span>
+                            </nav>
                             <h2 className="font-headline-lg text-headline-lg text-primary dark:text-teal-50 leading-none">Marketing Dashboard</h2>
                             <p className="font-body-md text-body-md text-on-surface-variant dark:text-slate-400 leading-relaxed">Monitoring your clinic's outreach and feline health engagement.</p>
                         </div>
@@ -19,36 +24,36 @@ export default function Dashboard({ stats = {}, recent_patients = [] }) {
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                     <MetricCard 
-                        title="Active Campaigns" 
-                        value={stats.active_campaigns || 0} 
-                        icon="mail" 
-                        trend="Live" 
-                        trendColor="text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20" 
-                        iconBg="bg-teal-50 dark:bg-teal-900/20" 
-                        iconColor="text-[#084C4B] dark:text-teal-400" 
-                    />
-                    <MetricCard 
-                        title="Avg Opens" 
-                        value={Math.round(stats.avg_open_rate || 0)} 
-                        icon="drafts" 
-                        trend="Avg" 
+                        title="Total Clients" 
+                        value={stats.total_clients || 0} 
+                        icon="groups" 
+                        trend="Active" 
                         trendColor="text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20" 
                         iconBg="bg-blue-50 dark:bg-blue-900/20" 
                         iconColor="text-blue-600 dark:text-blue-400" 
                     />
                     <MetricCard 
-                        title="Conversion" 
-                        value={Math.round(stats.conversion || 0)} 
-                        icon="ads_click" 
-                        trend="Avg" 
+                        title="Total Cats" 
+                        value={stats.total_cats || 0} 
+                        icon="pets" 
+                        trend="Patients" 
+                        trendColor="text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20" 
+                        iconBg="bg-teal-50 dark:bg-teal-900/20" 
+                        iconColor="text-[#084C4B] dark:text-teal-400" 
+                    />
+                    <MetricCard 
+                        title="Campaigns Sent" 
+                        value={stats.campaigns_sent || 0} 
+                        icon="mail" 
+                        trend="Completed" 
                         trendColor="text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20" 
                         iconBg="bg-pink-50 dark:bg-pink-900/20" 
                         iconColor="text-secondary dark:text-pink-400" 
                     />
                     <MetricCard 
-                        title="Total Patients" 
-                        value={stats.total_patients || 0} 
-                        icon="person_add" 
+                        title="Emails Delivered" 
+                        value={stats.emails_delivered || 0} 
+                        icon="send" 
                         trend="Total" 
                         trendColor="text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20" 
                         iconBg="bg-amber-50 dark:bg-amber-900/20" 
@@ -60,7 +65,7 @@ export default function Dashboard({ stats = {}, recent_patients = [] }) {
                     <div className="lg:col-span-2 bg-surface-container-lowest dark:bg-slate-900 rounded-xl border border-outline-variant dark:border-slate-800 shadow-sm overflow-hidden">
                         <div className="px-6 py-4 border-b border-outline-variant dark:border-slate-800 flex justify-between items-center">
                             <h4 className="font-headline-md text-headline-md text-primary dark:text-teal-50">Recent Patients</h4>
-                            <button className="text-sm font-semibold text-[#084C4B] dark:text-teal-400 hover:underline">View All</button>
+                            <Link href={route('clients')} className="text-sm font-semibold text-[#084C4B] dark:text-teal-400 hover:underline">View All</Link>
                         </div>
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
@@ -101,10 +106,10 @@ export default function Dashboard({ stats = {}, recent_patients = [] }) {
                             <div className="relative z-10">
                                 <h5 className="font-headline-md text-headline-md mb-2">Grow your clinic</h5>
                                 <p className="font-body-sm text-body-sm mb-6 text-on-primary-container">Launch a new automated campaign to re-engage inactive patients.</p>
-                                <button className="bg-secondary-fixed text-on-secondary-fixed px-6 py-3 rounded-lg font-bold hover:scale-105 transition-transform flex items-center gap-2">
+                                <Link href={route('campaigns')} className="bg-secondary-fixed text-on-secondary-fixed px-6 py-3 rounded-lg font-bold hover:scale-105 transition-transform inline-flex items-center gap-2">
                                     <span className="material-symbols-outlined">rocket_launch</span>
                                     Create Campaign
-                                </button>
+                                </Link>
                             </div>
                             <div className="absolute -right-4 -bottom-4 opacity-20 transform rotate-12 group-hover:rotate-0 transition-transform duration-500">
                                 <span className="material-symbols-outlined text-[120px]">pets</span>
@@ -119,20 +124,38 @@ export default function Dashboard({ stats = {}, recent_patients = [] }) {
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center text-sm">
                                     <span className="text-on-surface-variant dark:text-slate-400">Campaign Success Rate</span>
-                                    <span className="font-bold text-primary dark:text-teal-400">85% / 100%</span>
+                                    <span className="font-bold text-primary dark:text-teal-400">{stats.monthly_success_rate || 0}% / 50%</span>
                                 </div>
                                 <div className="w-full h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                    <div className="h-full bg-gradient-to-r from-primary-container to-secondary-fixed-dim rounded-full" style={{ width: '85%' }}></div>
+                                    <div 
+                                        className="h-full bg-gradient-to-r from-primary-container to-secondary-fixed-dim rounded-full transition-all duration-1000" 
+                                        style={{ width: `${Math.min((stats.monthly_success_rate / 50) * 100, 100)}%` }}
+                                    ></div>
                                 </div>
-                                <p className="text-[10px] text-slate-400 leading-tight">You're only 15% away from your best performing month this year! Keep it up.</p>
+                                <p className="text-[10px] text-slate-400 leading-tight">
+                                    {(stats.monthly_success_rate || 0) >= 50 
+                                        ? "Great job! You've surpassed this month's engagement goal." 
+                                        : `You're ${Math.max(0, 50 - (stats.monthly_success_rate || 0))}% away from your monthly target. Keep it up!`}
+                                </p>
                             </div>
                         </div>
 
                         <div className="bg-surface-container-lowest dark:bg-slate-900 p-6 rounded-xl border border-outline-variant dark:border-slate-800 shadow-sm">
                             <h5 className="font-semibold text-primary dark:text-teal-50 mb-4">Upcoming Schedule</h5>
                             <div className="space-y-4">
-                                <ScheduleItem month="Oct" day="24" title="Deworming Reminder" desc="Automated • 850 rec." />
-                                <ScheduleItem month="Oct" day="27" title="Halloween Pet Safety" desc="Newsletter • 5.2k rec." />
+                                {upcoming_campaigns.length > 0 ? (
+                                    upcoming_campaigns.map((camp) => (
+                                        <ScheduleItem 
+                                            key={camp.id}
+                                            month={camp.month} 
+                                            day={camp.day} 
+                                            title={camp.name} 
+                                            desc={`${camp.type} • ${camp.recipients} rec.`} 
+                                        />
+                                    ))
+                                ) : (
+                                    <p className="text-slate-400 italic text-sm">No upcoming campaigns scheduled.</p>
+                                )}
                             </div>
                         </div>
                     </div>

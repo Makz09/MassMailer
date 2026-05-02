@@ -23,6 +23,8 @@
         "vite": "^7.0.7"
     },
     "dependencies": {
-        "@tailwindcss/container-queries": "^0.1.1"
+        "@tailwindcss/container-queries": "^0.1.1",
+        "@tinymce/tinymce-react": "^6.3.0",
+        "tinymce": "^8.5.0"
     }
 }

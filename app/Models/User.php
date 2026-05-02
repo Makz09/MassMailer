@@ -6,12 +6,19 @@ namespace App\Models;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
+
+    const ROLE_SUPER_ADMIN = 'Super Admin';
+    const ROLE_ADMIN = 'Admin';
+    const ROLE_MARKETING = 'Marketing';
+    const ROLE_RECEPTS = 'Recepts';
+    const ROLE_OTHERS = 'Others';
 
     /**
      * The attributes that are mass assignable.
@@ -22,6 +29,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'phone',
+        'address',
+        'avatar_path',
+        'last_active_at',
     ];
 
     /**
@@ -44,6 +56,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'last_active_at' => 'datetime',
         ];
     }
 }

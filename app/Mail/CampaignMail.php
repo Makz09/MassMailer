@@ -48,9 +48,20 @@ class CampaignMail extends Mailable
     protected function parseBody()
     {
         $body = $this->template->body;
-        $body = str_replace('{{patient_name}}', $this->patient->name, $body);
-        $body = str_replace('{{owner_name}}', $this->patient->owner_name, $body);
-        return $body;
+        
+        $placeholders = [
+            '{{patient_name}}' => $this->patient->name,
+            '{{owner_name}}' => $this->patient->owner_name,
+            '{{first_name}}' => $this->patient->owner_first_name ?? '',
+            '{{last_name}}' => $this->patient->owner_last_name ?? '',
+            '{{owner_phone}}' => $this->patient->owner_phone ?? '',
+            '{{branch}}' => $this->patient->branch ?? 'Main Clinic',
+            '{{contact_owner}}' => $this->patient->contact_owner ?? 'Dr. Whiskers',
+            '{{first_visit}}' => $this->patient->first_visit_at ? $this->patient->first_visit_at->format('M d, Y') : '—',
+            '{{last_visit}}' => $this->patient->last_visit_at ? $this->patient->last_visit_at->format('M d, Y') : '—',
+        ];
+
+        return str_replace(array_keys($placeholders), array_values($placeholders), $body);
     }
 
     /**

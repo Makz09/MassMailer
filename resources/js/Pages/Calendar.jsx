@@ -6,10 +6,15 @@ export default function Calendar({ appointments = [] }) {
         <AppLayout>
             <Head title="Clinic Schedule" />
 
-            <div className="flex-1 px-10 pt-6 pb-10 max-w-[1720px] mx-auto font-manrope">
+            <div className="flex-1 px-10 pt-8 pb-10 max-w-[1720px] mx-auto font-manrope">
                 {/* Calendar Header */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                     <div className="space-y-1">
+                        <nav className="flex items-center gap-2 text-[10px] font-bold text-outline mb-2 uppercase tracking-[0.1em]">
+                            <span>Operations</span>
+                            <span className="material-symbols-outlined text-[12px]">chevron_right</span>
+                            <span className="text-primary-container">Service Calendar</span>
+                        </nav>
                         <h1 className="font-headline-lg text-headline-lg text-on-surface dark:text-teal-50 leading-none">Clinic Schedule</h1>
                         <p className="font-body-md text-body-md text-on-surface-variant dark:text-slate-400 leading-relaxed">Manage appointments, email campaigns, and upcoming events.</p>
                     </div>

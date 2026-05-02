@@ -6,10 +6,15 @@ export default function Reports() {
         <AppLayout>
             <Head title="Reports Engine" />
 
-            <div className="max-w-[1720px] mx-auto px-10 pt-6 pb-10 font-manrope">
+            <div className="max-w-[1720px] mx-auto px-10 pt-8 pb-10 font-manrope">
                 {/* Welcome & Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                     <div className="space-y-1">
+                        <nav className="flex items-center gap-2 text-[10px] font-bold text-outline mb-2 uppercase tracking-[0.1em]">
+                            <span>Admin</span>
+                            <span className="material-symbols-outlined text-[12px]">chevron_right</span>
+                            <span className="text-primary-container">Performance Reports</span>
+                        </nav>
                         <h2 className="font-headline-lg text-headline-lg text-primary dark:text-teal-50 leading-none">Reports Engine</h2>
                         <p className="font-body-md text-body-md text-on-surface-variant dark:text-slate-400 mt-2 max-w-2xl leading-relaxed">Access deep-dive analytics and performance metrics. Generate professional insights for your clinic's growth and patient engagement.</p>
                     </div>

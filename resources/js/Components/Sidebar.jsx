@@ -10,12 +10,12 @@ export default function Sidebar() {
                 <div className="flex items-center gap-3 mb-8">
                     <img 
                         alt="Clinic Logo" 
-                        className="w-10 h-10 rounded-lg shadow-sm" 
-                        src="/images/logo.jpg" 
+                        className="w-10 h-10 rounded-xl shadow-sm object-cover" 
+                        src={clinic?.logo_path || '/images/logo.png'} 
                     />
-                    <div>
-                        <h1 className="text-xs font-black tracking-tight text-[#084C4B] dark:text-teal-100 leading-none uppercase">{clinic?.name || 'Mass Mailer'}</h1>
-                        <p className="text-[10px] text-slate-500 font-bold mt-1 tracking-wider uppercase">Feline Care</p>
+                    <div className="flex flex-col justify-center">
+                        <h1 className="text-[13px] font-black tracking-tight text-[#084C4B] dark:text-teal-50 leading-tight uppercase">{clinic?.name || 'The Cat Clinic'}</h1>
+                        <p className="text-[9px] text-slate-400 font-black tracking-[0.15em] uppercase leading-none mt-0.5">Feline Care</p>
                     </div>
                 </div>
 
@@ -26,14 +26,17 @@ export default function Sidebar() {
                     <NavLink href={route('clients')} active={route().current('clients')} icon="groups">
                         Client
                     </NavLink>
-                    <NavLink href={route('campaigns')} active={route().current('campaigns')} icon="send">
+                    <NavLink href={route('segments.index')} active={route().current('segments.*')} icon="bookmarks">
+                        Segments
+                    </NavLink>
+                    <NavLink href={route('campaigns')} active={route().current('campaigns')} icon="rocket_launch">
                         Campaigns
                     </NavLink>
                     <NavLink href={route('templates')} active={route().current('templates')} icon="mail">
                         Email Library
                     </NavLink>
                     <NavLink href={route('analytics')} active={route().current('analytics')} icon="bar_chart">
-                        Analytics
+                        Analytics 
                     </NavLink>
                     <NavLink href={route('calendar')} active={route().current('calendar')} icon="calendar_month">
                         Calendar

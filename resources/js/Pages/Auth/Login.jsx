@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import InputError from '@/Components/InputError';
 import { Head, Link, useForm } from '@inertiajs/react';
 
-export default function Login({ status, canResetPassword }) {
+export default function Login({ clinic, status, canResetPassword }) {
     const [showPassword, setShowPassword] = useState(false);
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
@@ -29,7 +29,7 @@ export default function Login({ status, canResetPassword }) {
             <div className="hidden lg:flex lg:w-1/2 relative bg-slate-900">
                 <img 
                     src="/images/background-image.jpg" 
-                    alt="The Cat Clinic" 
+                    alt={clinic?.name || 'The Cat Clinic'} 
                     className="absolute inset-0 w-full h-full object-cover opacity-60"
                 />
                 <div className="absolute inset-0 bg-black/20"></div>
@@ -59,7 +59,7 @@ export default function Login({ status, canResetPassword }) {
                     {/* Header Icon & Title */}
                     <div className="flex flex-col items-center mb-10">
                         <div className="w-16 h-16 bg-teal-50 dark:bg-teal-900/10 rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-teal-100/50">
-                            <img src="/images/logo.jpg" alt="Logo" className="w-10 h-10 object-contain rounded-lg" />
+                            <img src={clinic?.logo_path || '/images/logo.png'} alt="Logo" className="w-10 h-10 object-contain rounded-lg" />
                         </div>
                         <h2 className="text-[28px] font-bold text-slate-900 mb-1">Welcome Back</h2>
                         <p className="text-[12px] font-bold text-slate-500 tracking-[0.1em] uppercase">Sign in to your account</p>
