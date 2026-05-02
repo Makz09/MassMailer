@@ -39,6 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::get('/calendar', [\App\Http\Controllers\AppointmentController::class, 'index'])->middleware(['auth', 'verified'])->name('calendar');
+Route::post('/calendar/appointments', [\App\Http\Controllers\AppointmentController::class, 'store'])->middleware(['auth', 'verified'])->name('calendar.appointments.store');
 
 Route::get('/templates', [\App\Http\Controllers\TemplateController::class, 'index'])->middleware(['auth', 'verified'])->name('templates');
 Route::post('/templates', [\App\Http\Controllers\TemplateController::class, 'store'])->middleware(['auth', 'verified'])->name('templates.store');

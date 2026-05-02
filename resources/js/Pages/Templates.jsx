@@ -131,7 +131,7 @@ export default function Templates(props) {
         }
     };
 
-    const statusOptions = ['Live', 'Active', 'Inactive', 'Draft', 'Upcoming', 'Archived'];
+    const statusOptions = ['Live', 'Inactive', 'Draft', 'Upcoming', 'Archived'];
 
     return (
         <AppLayout>
@@ -156,7 +156,6 @@ export default function Templates(props) {
                                 {[
                                     { label: 'All', value: '' },
                                     { label: 'Live', value: 'Live' },
-                                    { label: 'Active', value: 'Active' },
                                     { label: 'Inactive', value: 'Inactive' },
                                     { label: 'Draft', value: 'Draft' },
                                     { label: 'Upcoming', value: 'Upcoming' },
@@ -223,7 +222,7 @@ export default function Templates(props) {
                             category={template.category}
                             status={template.status}
                             statusColor={
-                                template.status?.toLowerCase() === 'live' || template.status?.toLowerCase() === 'active' ? 'bg-teal-500' : 
+                                template.status?.toLowerCase() === 'live' ? 'bg-teal-500' : 
                                 template.status?.toLowerCase() === 'draft' || template.status?.toLowerCase() === 'upcoming' ? 'bg-amber-500' : 
                                 'bg-slate-400'
                             }

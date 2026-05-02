@@ -252,76 +252,38 @@ class CampaignController extends Controller
         $request->validate([
             'template_id' => 'required|exists:templates,id',
             'campaign_name' => 'required|string',
-            'groups' => 'required|array',
+            'segment_id' => 'required|exists:segments,id',
         ]);
 
+        $segment = Segment::findOrFail($request->segment_id);
         $template = Template::findOrFail($request->template_id);
         
         $query = Patient::query();
-        $this->applyFilters($query, $request->groups);
+        $this->applyFilters($query, $segment->rules);
         $patients = $query->get();
 
         if ($patients->isEmpty()) {
-            return back()->withErrors(['groups' => 'No patients match these criteria.']);
+            return back()->withErrors(['segment_id' => 'No recipients match the selected segment filters.']);
         }
 
         $campaign = Campaign::create([
             'name' => $request->campaign_name,
-            'type' => 'Email (PHPMailer)',
-            'status' => 'Sending',
+            'type' => 'Email (Queued SMTP)',
+            'status' => 'Processing',
             'total_recipients' => $patients->count(),
             'scheduled_at' => now(),
         ]);
 
-        $mail = new PHPMailer(true);
-
-        try {
-            // Server settings
-            $mail->isSMTP();
-            $mail->Host       = env('MAIL_HOST', 'smtp.mailtrap.io');
-            $mail->SMTPAuth   = true;
-            $mail->Username   = env('MAIL_USERNAME');
-            $mail->Password   = env('MAIL_PASSWORD');
-            $mail->SMTPSecure = env('MAIL_ENCRYPTION', 'tls');
-            $mail->Port       = env('MAIL_PORT', 2525);
-
-            // Recipients
-            $mail->setFrom(env('MAIL_FROM_ADDRESS', 'care@catclinic.ph'), env('MAIL_FROM_NAME', 'The Cat Clinic'));
-
-            foreach ($patients as $patient) {
-                $mail->clearAddresses();
-                $mail->addAddress($patient->owner_email, $patient->owner_name);
-
-                // Content
-                $mail->isHTML(true);
-                $mail->Subject = $template->subject;
-                
-                // Parse Body (Similar to Mailable logic)
-                $body = $template->body;
-                $placeholders = [
-                    '{{patient_name}}' => $patient->name,
-                    '{{owner_name}}' => $patient->owner_name,
-                    '{{first_name}}' => $patient->owner_first_name ?? '',
-                    '{{last_name}}' => $patient->owner_last_name ?? '',
-                    '{{branch}}' => $patient->branch ?? 'Main Clinic',
-                ];
-                $parsedBody = str_replace(array_keys($placeholders), array_values($placeholders), $body);
-                
-                $mail->Body = $parsedBody;
-                $mail->send();
-            }
-
-            $campaign->update([
-                'status' => 'Completed',
-                'sent_at' => now(),
-            ]);
-
-            return back()->with('success', "Campaign '{$campaign->name}' sent to {$patients->count()} recipients via PHPMailer!");
-
-        } catch (Exception $e) {
-            $campaign->update(['status' => 'Failed']);
-            return back()->withErrors(['mail' => "Message could not be sent. Mailer Error: {$mail->ErrorInfo}"]);
+        foreach ($patients as $patient) {
+            \App\Jobs\SendCampaignEmail::dispatch($patient, $template);
         }
+
+        $campaign->update([
+            'status' => 'Completed', // Status means jobs are dispatched
+            'sent_at' => now(),
+        ]);
+
+        return back()->with('success', "Campaign '{$campaign->name}' launched! {$patients->count()} emails are being processed in the background.");
     }
 
     public function destroy(Campaign $campaign)

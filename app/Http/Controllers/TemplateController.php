@@ -58,7 +58,7 @@ class TemplateController extends Controller
         $validated['status'] = ucfirst(strtolower($validated['status']));
         
         // Final check against allowed values
-        if (!in_array($validated['status'], ['Live', 'Active', 'Inactive', 'Draft', 'Upcoming', 'Archived'])) {
+        if (!in_array($validated['status'], ['Live', 'Inactive', 'Draft', 'Upcoming', 'Archived'])) {
             $validated['status'] = 'Live';
         }
 
@@ -79,7 +79,7 @@ class TemplateController extends Controller
         ]);
 
         $validated['status'] = ucfirst(strtolower($validated['status']));
-        if (!in_array($validated['status'], ['Live', 'Active', 'Inactive', 'Draft', 'Upcoming', 'Archived'])) {
+        if (!in_array($validated['status'], ['Live', 'Inactive', 'Draft', 'Upcoming', 'Archived'])) {
             $validated['status'] = 'Live';
         }
 
