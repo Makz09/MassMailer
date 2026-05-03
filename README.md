@@ -140,4 +140,4 @@ This project is open-sourced software licensed under the **MIT license**.
 
 ---
 
-*Built with ❤️ by the MassMailer Team*
+*Built with ❤️ by Boss Makz*
