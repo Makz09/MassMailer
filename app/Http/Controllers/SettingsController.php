@@ -11,9 +11,21 @@ class SettingsController extends Controller
 {
     public function index()
     {
+        $onlineThreshold = now()->subMinutes(5);
+        $users = User::latest()->get();
+        
+        $onlineUsers = $users->filter(function($user) use ($onlineThreshold) {
+            return $user->last_active_at && $user->last_active_at >= $onlineThreshold;
+        });
+
         return Inertia::render('Settings', [
             'clinic' => ClinicSetting::first(),
-            'users' => User::latest()->get(),
+            'users' => $users,
+            'branches' => User::whereNotNull('branch')->distinct()->pluck('branch'),
+            'online_stats' => [
+                'count' => $onlineUsers->count(),
+                'list' => $onlineUsers->values(), // Reset keys for JSON
+            ]
         ]);
     }
 
@@ -54,6 +66,7 @@ class SettingsController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8',
             'role' => 'required|string|max:255',
+            'branch' => 'required|string|max:255',
             'phone' => 'nullable|string|max:255',
             'address' => 'nullable|string',
         ]);
@@ -63,6 +76,7 @@ class SettingsController extends Controller
             'email' => $validated['email'],
             'password' => \Hash::make($validated['password']),
             'role' => $validated['role'],
+            'branch' => $validated['branch'],
             'phone' => $validated['phone'],
             'address' => $validated['address'],
         ]);
@@ -80,9 +94,17 @@ class SettingsController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'role' => 'required|string|max:255',
+            'branch' => 'required|string|max:255',
             'phone' => 'nullable|string|max:255',
             'address' => 'nullable|string',
+            'password' => 'nullable|string|min:8',
         ]);
+
+        if (!empty($validated['password'])) {
+            $validated['password'] = \Hash::make($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
 
         $user->update($validated);
 

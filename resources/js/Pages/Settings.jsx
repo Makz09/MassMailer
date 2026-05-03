@@ -3,7 +3,7 @@ import { Head, useForm, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import InputError from '@/Components/InputError';
 
-export default function Settings({ clinic, users = [] }) {
+export default function Settings({ clinic, users = [], branches = [], online_stats = { count: 0, list: [] } }) {
     const { auth } = usePage().props;
     const [showUserModal, setShowUserModal] = useState(false);
     const [editingUserId, setEditingUserId] = useState(null);
@@ -26,6 +26,7 @@ export default function Settings({ clinic, users = [] }) {
         email: '',
         password: '',
         role: 'Others',
+        branch: 'Main Branch',
         phone: '',
         address: '',
     });
@@ -52,6 +53,7 @@ export default function Settings({ clinic, users = [] }) {
             email: user.email,
             password: '', // Keep empty for edit
             role: user.role,
+            branch: user.branch || 'Main Branch',
             phone: user.phone || '',
             address: user.address || '',
         });
@@ -208,6 +210,53 @@ export default function Settings({ clinic, users = [] }) {
                         </div>
                     </div>
 
+                    {/* Online Users Module */}
+                    <div className="col-span-12 lg:col-span-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
+                        <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="relative">
+                                    <span className="material-symbols-outlined text-primary dark:text-teal-400 text-2xl">sensors</span>
+                                    <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-900 animate-pulse"></span>
+                                </div>
+                                <h3 className="font-bold text-teal-950 dark:text-teal-100">Online Staff</h3>
+                            </div>
+                            <span className="px-3 py-1 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 text-xs font-black rounded-full">
+                                {online_stats.count} Active
+                            </span>
+                        </div>
+                        <div className="flex-1 overflow-y-auto max-h-[350px] p-2 space-y-1">
+                            {online_stats.list.length > 0 ? (
+                                online_stats.list.map(user => (
+                                    <div key={user.id} className="flex items-center justify-between p-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg transition-colors">
+                                        <div className="flex items-center gap-3">
+                                            <div className="h-8 w-8 rounded-full bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center text-xs font-bold text-primary dark:text-teal-200">
+                                                {user.name.charAt(0)}
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-bold text-slate-900 dark:text-teal-50">{user.name}</p>
+                                                <p className="text-[10px] text-slate-400 dark:text-slate-500 uppercase font-black tracking-tighter">{user.role}</p>
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1 justify-end">
+                                                <span className="material-symbols-outlined text-[12px]">location_on</span>
+                                                {user.branch || 'Main Branch'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="h-40 flex flex-col items-center justify-center text-slate-400 opacity-50">
+                                    <span className="material-symbols-outlined text-4xl mb-2">person_off</span>
+                                    <p className="text-xs font-medium uppercase tracking-widest">No active users</p>
+                                </div>
+                            )}
+                        </div>
+                        <div className="p-4 bg-slate-50/50 dark:bg-slate-800/30 border-t border-slate-100 dark:border-slate-800 text-center">
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Realtime Presence Hub</p>
+                        </div>
+                    </div>
+
                     {/* User Management */}
                     <section className="col-span-12 lg:col-span-8 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-0 shadow-sm overflow-hidden">
                         <div className="flex items-center justify-between p-8 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50">
@@ -231,7 +280,7 @@ export default function Settings({ clinic, users = [] }) {
                                     <tr>
                                         <th className="px-8 py-5 text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Staff Member</th>
                                         <th className="px-8 py-5 text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Role</th>
-                                        <th className="px-8 py-5 text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Phone Number</th>
+                                        <th className="px-8 py-5 text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Branch</th>
                                         <th className="px-8 py-5 text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Last Active</th>
                                         <th className="px-8 py-5 text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest text-right">Actions</th>
                                     </tr>
@@ -256,7 +305,7 @@ export default function Settings({ clinic, users = [] }) {
                                                 </span>
                                             </td>
                                             <td className="px-8 py-5">
-                                                <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">{user.phone || '--'}</p>
+                                                <p className="text-sm text-slate-600 dark:text-slate-300 font-medium italic">{user.branch || 'Main Branch'}</p>
                                             </td>
                                             <td className="px-8 py-5">
                                                 <p className="text-xs text-slate-500 dark:text-slate-400 italic">
@@ -329,6 +378,20 @@ export default function Settings({ clinic, users = [] }) {
                                         </select>
                                     </div>
                                     <div className="space-y-1">
+                                        <label className="text-[10px] font-black text-outline dark:text-slate-400 uppercase tracking-widest">Branch Location</label>
+                                        <input 
+                                            value={userForm.data.branch} 
+                                            onChange={e => userForm.setData('branch', e.target.value)} 
+                                            type="text" 
+                                            list="branch-recommendations"
+                                            placeholder="e.g. Main Branch"
+                                            className="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg text-sm px-4 py-2.5 outline-none focus:ring-2 focus:ring-primary/20 transition-all dark:text-slate-200" 
+                                        />
+                                        <datalist id="branch-recommendations">
+                                            {branches.map(b => <option key={b} value={b} />)}
+                                        </datalist>
+                                    </div>
+                                    <div className="space-y-1">
                                         <label className="text-[10px] font-black text-outline dark:text-slate-400 uppercase tracking-widest">Phone Number</label>
                                         <input value={userForm.data.phone} onChange={e => userForm.setData('phone', e.target.value)} type="tel" className="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg text-sm px-4 py-2.5 outline-none focus:ring-2 focus:ring-primary/20 transition-all dark:text-slate-200" />
                                     </div>
@@ -337,13 +400,24 @@ export default function Settings({ clinic, users = [] }) {
                                     <label className="text-[10px] font-black text-outline dark:text-slate-400 uppercase tracking-widest">Office Address</label>
                                     <textarea value={userForm.data.address} onChange={e => userForm.setData('address', e.target.value)} className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary/20 transition-all dark:text-slate-200 resize-none" rows="2" />
                                 </div>
-                                {!editingUserId && (
-                                    <div className="space-y-1">
-                                        <label className="text-[10px] font-black text-outline dark:text-slate-400 uppercase tracking-widest">Initial Password</label>
-                                        <input required value={userForm.data.password} onChange={e => userForm.setData('password', e.target.value)} type="password" minLength="8" className="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg text-sm px-4 py-2.5 outline-none focus:ring-2 focus:ring-primary/20 transition-all dark:text-slate-200" />
-                                        <InputError message={userForm.errors.password} />
-                                    </div>
-                                )}
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-black text-outline dark:text-slate-400 uppercase tracking-widest">
+                                        {editingUserId ? 'Change Password' : 'Initial Password'}
+                                    </label>
+                                    <input 
+                                        required={!editingUserId} 
+                                        value={userForm.data.password} 
+                                        onChange={e => userForm.setData('password', e.target.value)} 
+                                        type="password" 
+                                        placeholder={editingUserId ? 'Leave blank to keep current' : 'At least 8 characters'}
+                                        minLength="8" 
+                                        className="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg text-sm px-4 py-2.5 outline-none focus:ring-2 focus:ring-primary/20 transition-all dark:text-slate-200" 
+                                    />
+                                    <p className="text-[10px] text-slate-400 dark:text-slate-500 italic">
+                                        {editingUserId ? 'Only fill this if you want to reset their login password.' : 'The user can change this later in their profile settings.'}
+                                    </p>
+                                    <InputError message={userForm.errors.password} />
+                                </div>
                                 <div className="pt-4 flex gap-3">
                                     <button type="button" onClick={() => setShowUserModal(false)} className="flex-1 py-3 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-sm text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition-colors">Cancel</button>
                                     <button disabled={userForm.processing} type="submit" className="flex-1 py-3 bg-primary text-white rounded-lg font-bold text-sm hover:opacity-90 transition-all shadow-lg shadow-primary/20">

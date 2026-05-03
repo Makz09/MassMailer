@@ -114,17 +114,27 @@ export default function TopBar({ user }) {
                 </div>
             </div>
             <div className="flex items-center gap-6">
-                <div className="h-8 w-px bg-slate-200 mx-2 dark:bg-slate-800"></div>
-                <div className="flex items-center gap-3">
+                <div className="h-10 w-px bg-slate-100 dark:bg-slate-800 mx-2"></div>
+                <div className="flex items-center gap-4 group cursor-pointer">
                     <div className="text-right">
-                        <p className="text-xs font-bold text-[#084C4B] dark:text-teal-200">{user?.name || 'Admin User'}</p>
-                        <p className="text-[10px] text-slate-500">{user?.role || 'Clinic Manager'}</p>
+                        <p className="text-sm font-black text-primary dark:text-teal-300 leading-none mb-1 tracking-tight">{user?.name || 'Admin User'}</p>
+                        <div className="flex items-center justify-end gap-2">
+                            <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-none">{user?.role || 'Clinic Manager'}</p>
+                            <span className="w-1 h-1 rounded-full bg-slate-200 dark:bg-slate-700"></span>
+                            <p className="text-[9px] font-black text-teal-600 dark:text-teal-500 uppercase flex items-center gap-0.5 leading-none">
+                                <span className="material-symbols-outlined text-[11px]">location_on</span>
+                                {user?.branch || 'Main Branch'}
+                            </p>
+                        </div>
                     </div>
-                    <img 
-                        alt="User Avatar" 
-                        className="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-800" 
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIrZRfIyqJid637LFrUa17v4VqWi51TZDngUL8ivK6yW4VOMYbFrC_vNgIQ_us97bh_Y0q9BlxJb0VgZfA4dZxdWA9WzwBScqaPIzdNz7la9NbgxvKkXo8h-BFd_rM5P8RHrREIkn4v3oZ3mLU9Ig77OqOOzKD66JOlW91gxPE3ct70wwOIBM9P4cQ9S-fURp-9Eds_TzFKMnDrVyYhAOUdqjITtdwaldxtk2P0_tt5WgZROLA4kEZ4a_-PFKdDxkTcJF4HuAQ73Go" 
-                    />
+                    <div className="relative">
+                        <img 
+                            alt="User Avatar" 
+                            className="w-10 h-10 rounded-xl border-2 border-white dark:border-slate-800 shadow-sm object-cover group-hover:scale-105 transition-transform duration-300" 
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIrZRfIyqJid637LFrUa17v4VqWi51TZDngUL8ivK6yW4VOMYbFrC_vNgIQ_us97bh_Y0q9BlxJb0VgZfA4dZxdWA9WzwBScqaPIzdNz7la9NbgxvKkXo8h-BFd_rM5P8RHrREIkn4v3oZ3mLU9Ig77OqOOzKD66JOlW91gxPE3ct70wwOIBM9P4cQ9S-fURp-9Eds_TzFKMnDrVyYhAOUdqjITtdwaldxtk2P0_tt5WgZROLA4kEZ4a_-PFKdDxkTcJF4HuAQ73Go" 
+                        />
+                        <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-950 shadow-sm"></div>
+                    </div>
                 </div>
             </div>
         </header>
