@@ -268,6 +268,9 @@ class CampaignController extends Controller
 
         $campaign = Campaign::create([
             'name' => $request->campaign_name,
+            'template_id' => $request->template_id,
+            'segment_id' => $request->segment_id,
+            'user_id' => auth()->id(),
             'type' => 'Email (Queued SMTP)',
             'status' => 'Processing',
             'total_recipients' => $patients->count(),

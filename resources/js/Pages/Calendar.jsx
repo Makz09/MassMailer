@@ -53,23 +53,29 @@ export default function Calendar({
         });
     };
 
-    const [filters, setFilters] = useState({
-        campaign: true,
-        surgery: true,
-        checkup: true,
-        event: true
+    // Initialize filters for all unique types found in the database
+    const [filters, setFilters] = useState(() => {
+        const initial = { event: true };
+        appointmentTypes.forEach(type => {
+            if (type) initial[type.toLowerCase()] = true;
+        });
+        // Ensure defaults exist even if not in DB yet
+        ['campaign', 'surgery', 'checkup'].forEach(t => {
+            if (!(t in initial)) initial[t] = true;
+        });
+        return initial;
     });
 
     const toggleFilter = (type) => {
-        setFilters(prev => ({ ...prev, [type]: !prev[type] }));
+        const lowerType = type?.toLowerCase() || 'event';
+        setFilters(prev => ({ ...prev, [lowerType]: !prev[lowerType] }));
     };
 
     const isVisible = (apt) => {
-        const type = apt.type?.toLowerCase();
-        if (type === 'campaign') return filters.campaign;
-        if (type === 'surgery' || type === 'grooming') return filters.surgery;
-        if (type === 'checkup') return filters.checkup;
-        return filters.event; // Default/Others
+        const type = apt.type?.toLowerCase() || 'event';
+        // If the specific type filter exists, use it; otherwise fallback to 'event'
+        if (filters.hasOwnProperty(type)) return filters[type];
+        return filters.event;
     };
 
     const calendarData = useMemo(() => {
@@ -83,33 +89,64 @@ export default function Calendar({
         const firstDay = new Date(year, month, 1);
         const lastDay = new Date(year, month + 1, 0);
         
-        const daysInMonth = lastDay.getDate();
-        const startDayOfWeek = firstDay.getDay(); // 0 (Sun) to 6 (Sat)
-        
         const days = [];
         
-        // Prev Month padding
-        const prevMonthLastDay = new Date(year, month, 0).getDate();
-        for (let i = startDayOfWeek - 1; i >= 0; i--) {
-            days.push({ day: prevMonthLastDay - i, isOutside: true, date: new Date(year, month - 1, prevMonthLastDay - i) });
-        }
-        
-        // Current Month
-        for (let i = 1; i <= daysInMonth; i++) {
-            days.push({ day: i, isOutside: false, date: new Date(year, month, i) });
-        }
-        
-        // Next Month padding
-        const remaining = 42 - days.length; // Use 42 to always show 6 weeks for stability
-        for (let i = 1; i <= remaining; i++) {
-            days.push({ day: i, isOutside: true, date: new Date(year, month + 1, i) });
+        if (view === 'month') {
+            const daysInMonth = lastDay.getDate();
+            const startDayOfWeek = firstDay.getDay(); // 0 (Sun) to 6 (Sat)
+            
+            // Prev Month padding
+            const prevMonthLastDay = new Date(year, month, 0).getDate();
+            for (let i = startDayOfWeek - 1; i >= 0; i--) {
+                days.push({ day: prevMonthLastDay - i, isOutside: true, date: new Date(year, month - 1, prevMonthLastDay - i) });
+            }
+            
+            // Current Month
+            for (let i = 1; i <= daysInMonth; i++) {
+                days.push({ day: i, isOutside: false, date: new Date(year, month, i) });
+            }
+            
+            // Next Month padding
+            const remaining = 42 - days.length; // Use 42 to always show 6 weeks for stability
+            for (let i = 1; i <= remaining; i++) {
+                days.push({ day: i, isOutside: true, date: new Date(year, month + 1, i) });
+            }
+        } else if (view === 'week') {
+            // Get the Sunday of the current week
+            const currentDay = currentDate.getDay();
+            const sunday = new Date(currentDate);
+            sunday.setDate(currentDate.getDate() - currentDay);
+            
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(sunday);
+                d.setDate(sunday.getDate() + i);
+                days.push({ 
+                    day: d.getDate(), 
+                    isOutside: d.getMonth() !== currentDate.getMonth(), 
+                    date: d 
+                });
+            }
+        } else if (view === 'day') {
+            days.push({ 
+                day: currentDate.getDate(), 
+                isOutside: false, 
+                date: new Date(currentDate) 
+            });
         }
         
         return { days, monthName, year };
-    }, [currentDate]);
+    }, [currentDate, view]);
 
-    const changeMonth = (offset) => {
-        const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + offset, 1);
+    const navigate = (offset) => {
+        const newDate = new Date(currentDate);
+        if (view === 'month') {
+            newDate.setMonth(currentDate.getMonth() + offset);
+            newDate.setDate(1);
+        } else if (view === 'week') {
+            newDate.setDate(currentDate.getDate() + (offset * 7));
+        } else {
+            newDate.setDate(currentDate.getDate() + offset);
+        }
         setCurrentDate(newDate);
     };
 
@@ -141,6 +178,19 @@ export default function Calendar({
     }, [appointments, agendaPage, filters]);
 
     const upcomingAppointments = upcomingAppointmentsData.items;
+
+    const todayCount = useMemo(() => {
+        return getAppointmentsForDate(new Date()).length;
+    }, [appointments, filters]);
+
+    const monthCount = useMemo(() => {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        return appointments.filter(apt => {
+            const d = new Date(apt.start_time);
+            return d.getFullYear() === year && d.getMonth() === month && isVisible(apt);
+        }).length;
+    }, [appointments, currentDate, filters]);
 
     return (
         <AppLayout>
@@ -181,7 +231,7 @@ export default function Calendar({
                         </div>
                         <div className="flex items-center gap-2 bg-white dark:bg-slate-900 rounded-xl border border-outline-variant dark:border-slate-800 px-3 py-2 shadow-sm">
                             <button 
-                                onClick={() => changeMonth(-1)}
+                                onClick={() => navigate(-1)}
                                 className="material-symbols-outlined text-on-surface-variant dark:text-slate-400 hover:bg-surface-container dark:hover:bg-slate-800 rounded-full p-1 transition-colors"
                             >
                                 chevron_left
@@ -190,7 +240,7 @@ export default function Calendar({
                                 {calendarData.monthName} {calendarData.year}
                             </span>
                             <button 
-                                onClick={() => changeMonth(1)}
+                                onClick={() => navigate(1)}
                                 className="material-symbols-outlined text-on-surface-variant dark:text-slate-400 hover:bg-surface-container dark:hover:bg-slate-800 rounded-full p-1 transition-colors"
                             >
                                 chevron_right
@@ -204,14 +254,16 @@ export default function Calendar({
                     <div className="col-span-12 lg:col-span-9">
                         <div className="bg-white dark:bg-slate-900 rounded-xl border border-outline-variant dark:border-slate-800 shadow-sm overflow-hidden">
                             {/* Calendar Days Header */}
-                            <div className="grid grid-cols-7 bg-surface-container-low dark:bg-slate-800 border-b border-outline-variant dark:border-slate-700">
-                                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                                    <div key={day} className="py-3 text-center font-label-md text-label-md text-slate-500 dark:text-slate-400 uppercase tracking-widest">{day}</div>
-                                ))}
-                            </div>
+                            {view !== 'day' && (
+                                <div className="grid grid-cols-7 bg-surface-container-low dark:bg-slate-800 border-b border-outline-variant dark:border-slate-700">
+                                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                                        <div key={day} className="py-3 text-center font-label-md text-label-md text-slate-500 dark:text-slate-400 uppercase tracking-widest">{day}</div>
+                                    ))}
+                                </div>
+                            )}
                             
                             {/* Calendar Grid */}
-                            <div className="grid grid-cols-7 grid-auto-rows-[minmax(120px,auto)] bg-slate-50 dark:bg-slate-950">
+                            <div className={`grid ${view === 'day' ? 'grid-cols-1' : 'grid-cols-7'} grid-auto-rows-[minmax(120px,auto)] bg-slate-50 dark:bg-slate-950`}>
                                 {calendarData.days.map((day, idx) => {
                                     const dayAppointments = getAppointmentsForDate(day.date);
                                     const isToday = day.date && day.date.toDateString() === new Date().toDateString();
@@ -308,30 +360,29 @@ export default function Calendar({
                         <div className="bg-white dark:bg-slate-900 border border-outline-variant dark:border-slate-800 rounded-xl p-5 shadow-sm">
                             <h3 className="font-label-md text-label-md text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">Legend</h3>
                             <div className="space-y-3">
-                                <LegendItem 
-                                    color="bg-teal-600" 
-                                    label="Campaigns" 
-                                    checked={filters.campaign} 
-                                    onChange={() => toggleFilter('campaign')} 
-                                />
-                                <LegendItem 
-                                    color="bg-secondary" 
-                                    label="Surgeries" 
-                                    checked={filters.surgery} 
-                                    onChange={() => toggleFilter('surgery')} 
-                                />
-                                <LegendItem 
-                                    color="bg-primary-container" 
-                                    label="Checkups" 
-                                    checked={filters.checkup} 
-                                    onChange={() => toggleFilter('checkup')} 
-                                />
-                                <LegendItem 
-                                    color="bg-tertiary" 
-                                    label="Clinic Events" 
-                                    checked={filters.event} 
-                                    onChange={() => toggleFilter('event')} 
-                                />
+                                {Object.keys(filters).map((type) => {
+                                    const typeConfigs = {
+                                        campaign: { color: 'bg-teal-600', badge: 'bg-teal-50 text-teal-700 border-teal-200 dark:bg-teal-900/30 dark:text-teal-400 dark:border-teal-800', label: 'Campaigns', icon: 'campaign' },
+                                        surgery: { color: 'bg-pink-600', badge: 'bg-pink-50 text-pink-700 border-pink-200 dark:bg-pink-900/30 dark:text-pink-400 dark:border-pink-800', label: 'Surgeries', icon: 'medical_services' },
+                                        checkup: { color: 'bg-primary', badge: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800', label: 'Checkups', icon: 'vaccines' },
+                                        event: { color: 'bg-indigo-600', badge: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-400 dark:border-indigo-800', label: 'Clinic Events', icon: 'celebration' },
+                                        grooming: { color: 'bg-orange-500', badge: 'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-800', label: 'Grooming', icon: 'pets' },
+                                        meeting: { color: 'bg-amber-600', badge: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800', label: 'Meetings', icon: 'star' },
+                                        others: { color: 'bg-slate-500', badge: 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-900/30 dark:text-slate-400 dark:border-slate-800', label: 'Others', icon: 'event' }
+                                    };
+                                    
+                                    const config = typeConfigs[type] || typeConfigs.others;
+
+                                    return (
+                                        <LegendItem 
+                                            key={type}
+                                            color={config.color} 
+                                            label={config.label} 
+                                            checked={filters[type]} 
+                                            onChange={() => toggleFilter(type)} 
+                                        />
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
@@ -339,17 +390,17 @@ export default function Calendar({
 
                 {/* Bottom Stats */}
                 <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6 pb-12">
-                    <StatCard icon="event_note" iconBg="bg-teal-50 dark:bg-teal-900/20" iconColor="text-teal-600" label="Monthly Appointments" value={monthAppointments} />
+                    <StatCard icon="event_note" iconBg="bg-teal-50 dark:bg-teal-900/20" iconColor="text-teal-600" label="Monthly Appointments" value={monthCount} />
                     <StatCard icon="campaign" iconBg="bg-pink-50 dark:bg-pink-900/20" iconColor="text-pink-600" label="Total Campaigns" value={totalCampaigns} />
                     <StatCard icon="group" iconBg="bg-slate-50 dark:bg-slate-800" iconColor="text-slate-600" label="Total Patients" value={totalPatients} />
-                    <StatCard icon="today" iconBg="bg-primary-fixed dark:bg-teal-900/40" iconColor="text-on-primary-fixed-variant dark:text-teal-400" label="Scheduled Today" value={todayAppointments} />
+                    <StatCard icon="today" iconBg="bg-primary-fixed dark:bg-teal-900/40" iconColor="text-on-primary-fixed-variant dark:text-teal-400" label="Scheduled Today" value={todayCount} />
                 </div>
             </div>
 
             {/* New Appointment Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in duration-200">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in duration-200">
                         <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
                             <h3 className="text-xl font-bold text-on-surface dark:text-teal-50">Schedule Appointment</h3>
                             <button onClick={() => setIsModalOpen(false)} className="material-symbols-outlined text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">close</button>
@@ -462,7 +513,7 @@ export default function Calendar({
             {/* View Appointment Modal */}
             {isViewModalOpen && selectedAppointment && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in duration-200">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in duration-200">
                         <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-teal-600 text-white">
                             <div>
                                 <h3 className="text-xl font-bold">{selectedAppointment.title}</h3>
@@ -549,26 +600,19 @@ function Day({ number, date, isOutside = false, isToday = false, onClick, childr
 function EventBadge({ type, label, onClick }) {
     const lowerType = type?.toLowerCase() || 'checkup';
 
-    const styles = {
-        campaign: 'bg-teal-50 text-teal-700 border-teal-200 dark:bg-teal-900/30 dark:text-teal-400 dark:border-teal-800',
-        surgery: 'bg-secondary-container text-on-secondary-container border-pink-200 dark:bg-pink-900/30 dark:text-pink-400 dark:border-pink-800',
-        event: 'bg-tertiary-fixed text-on-tertiary-fixed-variant border-tertiary-container dark:bg-teal-900/20 dark:text-teal-300 dark:border-teal-700',
-        checkup: 'bg-primary-fixed text-on-primary-fixed-variant border-primary-container dark:bg-teal-900/40 dark:text-teal-200 dark:border-teal-700',
-        meeting: 'bg-teal-600 text-white',
-        grooming: 'bg-secondary-container text-on-secondary-container border-pink-200 dark:bg-pink-900/30 dark:text-pink-400 dark:border-pink-800'
+    const typeConfigs = {
+        campaign: { badge: 'bg-teal-50 text-teal-700 border-teal-200 dark:bg-teal-900/30 dark:text-teal-400 dark:border-teal-800', icon: 'campaign' },
+        surgery: { badge: 'bg-pink-50 text-pink-700 border-pink-200 dark:bg-pink-900/30 dark:text-pink-400 dark:border-pink-800', icon: 'medical_services' },
+        checkup: { badge: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800', icon: 'vaccines' },
+        event: { badge: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-400 dark:border-indigo-800', icon: 'celebration' },
+        grooming: { badge: 'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-800', icon: 'pets' },
+        meeting: { badge: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800', icon: 'star' },
+        others: { badge: 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-900/30 dark:text-slate-400 dark:border-slate-800', icon: 'event' }
     };
 
-    const icons = {
-        campaign: 'campaign',
-        surgery: 'medical_services',
-        event: 'celebration',
-        checkup: 'vaccines',
-        meeting: 'star',
-        grooming: 'pets'
-    };
-
-    const styleClass = styles[lowerType] || styles.checkup;
-    const iconName = icons[lowerType] || 'event';
+    const config = typeConfigs[lowerType] || typeConfigs.others;
+    const styleClass = config.badge;
+    const iconName = config.icon;
 
     return (
         <div 

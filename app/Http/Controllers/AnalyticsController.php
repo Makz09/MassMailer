@@ -4,79 +4,178 @@ namespace App\Http\Controllers;
 
 use App\Models\Campaign;
 use App\Models\Patient;
+use App\Models\Appointment;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 
 class AnalyticsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $totalRecipients = Campaign::sum('total_recipients');
-        $totalOpens = Campaign::sum('opens');
-        $totalClicks = Campaign::sum('clicks');
-        $totalBookings = Campaign::sum('bookings');
+        $range = $request->query('range', 'Last 30 Days');
+        $dateFilter = null;
 
-        $avgOpenRate = $totalRecipients > 0 ? ($totalOpens / $totalRecipients) * 100 : 0;
-        $avgClickRate = $totalRecipients > 0 ? ($totalClicks / $totalRecipients) * 100 : 0;
+        switch ($range) {
+            case 'Last 7 Days':
+                $dateFilter = now()->subDays(7);
+                break;
+            case 'Last 90 Days':
+                $dateFilter = now()->subDays(90);
+                break;
+            case 'This Year':
+                $dateFilter = now()->startOfYear();
+                break;
+            case 'All Time':
+                $dateFilter = null;
+                break;
+            default: // Last 30 Days
+                $dateFilter = now()->subDays(30);
+                break;
+        }
 
-        // Engagement Trends (Last 7 Campaigns)
-        $engagementTrends = Campaign::whereNotNull('sent_at')
-            ->latest('sent_at')
-            ->limit(7)
-            ->get(['name', 'sent_at', 'opens', 'clicks', 'total_recipients'])
-            ->map(function($campaign) {
-                return [
-                    'date' => $campaign->sent_at ? $campaign->sent_at->format('M d') : 'N/A',
-                    'open_rate' => $campaign->total_recipients > 0 ? round(($campaign->opens / $campaign->total_recipients) * 100, 1) : 0,
-                    'click_rate' => $campaign->total_recipients > 0 ? round(($campaign->clicks / $campaign->total_recipients) * 100, 1) : 0,
-                ];
-            })
-            ->reverse()
-            ->values();
+        $totalRecipients = Campaign::when($dateFilter, fn($q) => $q->where('created_at', '>=', $dateFilter))->sum('total_recipients');
+        $totalOpens = Campaign::when($dateFilter, fn($q) => $q->where('created_at', '>=', $dateFilter))->sum('opens');
+        $totalBookings = Campaign::when($dateFilter, fn($q) => $q->where('created_at', '>=', $dateFilter))->sum('bookings');
+
+        // Calculate Busiest Day
+        $busiestDayData = Appointment::select(DB::raw('DATE(start_time) as date'), DB::raw('count(*) as count'))
+            ->when($dateFilter, fn($q) => $q->where('start_time', '>=', $dateFilter))
+            ->groupBy('date')
+            ->orderBy('count', 'desc')
+            ->first();
+        
+        $busiestDay = $busiestDayData ? \Carbon\Carbon::parse($busiestDayData->date)->format('M d, Y') : 'None';
+        $busiestDayCount = $busiestDayData ? $busiestDayData->count : 0;
+        
+        // Top Type for Busiest Day
+        $busiestDayType = 'None';
+        if ($busiestDayData) {
+            $topType = Appointment::whereDate('start_time', $busiestDayData->date)
+                ->select('type', DB::raw('count(*) as count'))
+                ->groupBy('type')
+                ->orderBy('count', 'desc')
+                ->first();
+            $busiestDayType = $topType ? $topType->type : 'General';
+        }
+
+        // Calculate Busiest Month
+        $busiestMonthData = Appointment::select(DB::raw('MONTH(start_time) as month'), DB::raw('YEAR(start_time) as year'), DB::raw('count(*) as count'))
+            ->when($dateFilter, fn($q) => $q->where('start_time', '>=', $dateFilter))
+            ->groupBy('month', 'year')
+            ->orderBy('count', 'desc')
+            ->first();
+        
+        $busiestMonth = $busiestMonthData ? \Carbon\Carbon::create($busiestMonthData->year, $busiestMonthData->month)->format('F Y') : 'None';
+        $busiestMonthCount = $busiestMonthData ? $busiestMonthData->count : 0;
+
+        // Top Email Template
+        $topTemplateData = Campaign::join('templates', 'campaigns.template_id', '=', 'templates.id')
+            ->when($dateFilter, fn($q) => $q->where('campaigns.created_at', '>=', $dateFilter))
+            ->select('templates.name', DB::raw('count(*) as count'))
+            ->groupBy('templates.id', 'templates.name')
+            ->orderBy('count', 'desc')
+            ->first();
+        
+        $topTemplate = $topTemplateData ? $topTemplateData->name : 'None';
+        $topTemplateCount = $topTemplateData ? $topTemplateData->count : 0;
+
+        // Top Segment
+        $topSegmentData = Campaign::join('segments', 'campaigns.segment_id', '=', 'segments.id')
+            ->whereNull('segments.deleted_at')
+            ->when($dateFilter, fn($q) => $q->where('campaigns.created_at', '>=', $dateFilter))
+            ->select('segments.name', DB::raw('count(*) as count'))
+            ->groupBy('segments.id', 'segments.name')
+            ->orderBy('count', 'desc')
+            ->first();
+        
+        $topSegment = $topSegmentData ? $topSegmentData->name : 'General Audience';
+        $topSegmentCount = $topSegmentData ? $topSegmentData->count : 0;
+
+        // System Metrics
+        $totalClients = Patient::when($dateFilter, fn($q) => $q->where('created_at', '>=', $dateFilter))
+            ->select(DB::raw("CONCAT(owner_first_name, ' ', owner_last_name)"))->distinct()->count();
+        $totalCats = Patient::when($dateFilter, fn($q) => $q->where('created_at', '>=', $dateFilter))->count();
+        $totalCampaignsCount = Campaign::when($dateFilter, fn($q) => $q->where('created_at', '>=', $dateFilter))->count();
+
+        $systemMetrics = [
+            ['label' => 'Clients', 'value' => $totalClients],
+            ['label' => 'Cats', 'value' => $totalCats],
+            ['label' => 'Campaigns', 'value' => $totalCampaignsCount],
+            ['label' => 'Emails', 'value' => $totalRecipients],
+        ];
 
         // Audience Segmentation by Breed
-        $totalPatients = Patient::count();
         $segmentation = Patient::select('breed', DB::raw('count(*) as total'))
+            ->when($dateFilter, fn($q) => $q->where('created_at', '>=', $dateFilter))
             ->groupBy('breed')
             ->orderBy('total', 'desc')
-            ->limit(4)
             ->get()
-            ->map(function($item) use ($totalPatients) {
+            ->map(function ($item) use ($totalCats) {
                 return [
                     'label' => $item->breed ?? 'Unknown',
                     'value' => number_format($item->total),
-                    'percent' => $totalPatients > 0 ? round(($item->total / $totalPatients) * 100, 1) : 0,
+                    'percent' => $totalCats > 0 ? round(($item->total / $totalCats) * 100) : 0,
                 ];
             });
 
+        $topBreed = $segmentation->first();
+        $insight = $topBreed ? "\"{$topBreed['label']}\" are your most frequent patients, making up {$topBreed['percent']}% of your clinic population." : "No patient data available for dynamic insights.";
+
         // Recent Campaign Stats
-        $recentCampaigns = Campaign::latest()
-            ->limit(5)
-            ->get()
-            ->map(function($campaign) {
+        $recentCampaigns = Campaign::with(['template', 'segment', 'staff'])
+            ->when($dateFilter, fn($q) => $q->where('created_at', '>=', $dateFilter))
+            ->latest()
+            ->paginate(5)
+            ->through(function ($campaign) {
                 return [
                     'name' => $campaign->name,
-                    'target' => $campaign->target_audience ?? 'General Audience',
+                    'template' => $campaign->template?->name ?? 'Custom Template',
+                    'segment' => $campaign->segment?->name ?? 'General Audience',
+                    'staff' => [
+                        'name' => $campaign->staff?->name ?? 'System',
+                        'role' => $campaign->staff?->role ?? 'Staff'
+                    ],
+                    'recipients' => number_format($campaign->total_recipients),
                     'status' => $campaign->status,
-                    'date' => $campaign->sent_at ? $campaign->sent_at->format('M d, Y') : ($campaign->scheduled_at ? $campaign->scheduled_at->format('M d, Y') : 'Draft'),
-                    'opens' => $campaign->total_recipients > 0 ? round(($campaign->opens / $campaign->total_recipients) * 100, 1) . '%' : '0%',
-                    'clicks' => $campaign->total_recipients > 0 ? round(($campaign->clicks / $campaign->total_recipients) * 100, 1) . '%' : '0%',
-                    'bookings' => $campaign->bookings,
-                    'isOngoing' => in_array($campaign->status, ['Sending', 'Ongoing']),
+                    'date_sent' => $campaign->sent_at ? $campaign->sent_at->format('M d, Y g:i A') : ($campaign->scheduled_at ? $campaign->scheduled_at->format('M d, Y g:i A') : 'Draft'),
+                    'isOngoing' => in_array($campaign->status, ['Sending', 'Ongoing', 'Processing']),
+                ];
+            });
+
+        // Branch Distribution (Clients & Cats)
+        $branchDistribution = Patient::select('branch', DB::raw("COUNT(*) as cat_count"), DB::raw("COUNT(DISTINCT CONCAT(owner_first_name, ' ', owner_last_name)) as client_count"))
+            ->when($dateFilter, fn($q) => $q->where('created_at', '>=', $dateFilter))
+            ->whereNotNull('branch')
+            ->groupBy('branch')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'name' => $item->branch,
+                    'cats' => $item->cat_count,
+                    'clients' => $item->client_count,
                 ];
             });
 
         return Inertia::render('Analytics', [
             'metrics' => [
-                'avgOpenRate' => round($avgOpenRate, 1),
-                'avgClickRate' => round($avgClickRate, 1),
-                'totalBookings' => $totalBookings,
-                'totalPatients' => number_format($totalPatients),
+                'busiestDay' => $busiestDay,
+                'busiestDayCount' => $busiestDayCount,
+                'busiestDayType' => $busiestDayType,
+                'busiestMonth' => $busiestMonth,
+                'busiestMonthCount' => $busiestMonthCount,
+                'topTemplate' => $topTemplate,
+                'topTemplateCount' => $topTemplateCount,
+                'topSegment' => $topSegment,
+                'topSegmentCount' => $topSegmentCount,
             ],
-            'engagementTrends' => $engagementTrends,
+            'systemMetrics' => $systemMetrics,
+            'branchDistribution' => $branchDistribution,
             'segmentation' => $segmentation,
             'recentCampaigns' => $recentCampaigns,
+            'insight' => $insight,
+            'totalCats' => $totalCats,
+            'currentRange' => $range,
         ]);
     }
 }

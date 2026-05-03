@@ -7,6 +7,7 @@ import InputError from '@/Components/InputError';
 export default function Clients(props) {
     const patients = props.patients || { data: [], links: [] };
     const availableColumns = props.availableColumns || [];
+    const suggestions = props.suggestions || { breeds: [], veterinarians: [], branches: [], statuses: [] };
     const [showModal, setShowModal] = useState(false);
     const [showColumnModal, setShowColumnModal] = useState(false);
     const [showImportModal, setShowImportModal] = useState(false);
@@ -675,7 +676,7 @@ export default function Clients(props) {
                 {/* Modal for Add/Edit Patient */}
                 {showModal && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-                        <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
+                        <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
                             <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
                                 <h3 className="font-bold text-lg text-primary dark:text-teal-50">
                                     {editingId ? 'Edit Feline Patient' : 'Add New Feline Patient'}
@@ -693,7 +694,7 @@ export default function Clients(props) {
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-[10px] font-black text-outline dark:text-slate-400 uppercase tracking-widest">Breed</label>
-                                        <input required value={data.breed} onChange={e => setData('breed', e.target.value)} type="text" className="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg text-sm px-4 py-2.5 focus:ring-2 focus:ring-primary/20 outline-none" placeholder="e.g. Siamese" />
+                                        <input list="breed-suggestions" required value={data.breed} onChange={e => setData('breed', e.target.value)} type="text" className="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg text-sm px-4 py-2.5 focus:ring-2 focus:ring-primary/20 outline-none" placeholder="e.g. Siamese" />
                                         <InputError message={errors.breed} />
                                     </div>
                                 </div>
@@ -741,12 +742,15 @@ export default function Clients(props) {
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-1">
                                             <label className="text-[10px] font-black text-outline dark:text-slate-400 uppercase tracking-widest">Assigned Veterinarian</label>
-                                            <input value={data.assigned_veterinarian} onChange={e => setData('assigned_veterinarian', e.target.value)} type="text" className="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg text-sm px-4 py-2.5 focus:ring-2 focus:ring-primary/20 outline-none" placeholder="Dr. Sarah" />
+                                            <input list="vet-suggestions" value={data.assigned_veterinarian} onChange={e => setData('assigned_veterinarian', e.target.value)} type="text" className="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg text-sm px-4 py-2.5 focus:ring-2 focus:ring-primary/20 outline-none" placeholder="Dr. Sarah" />
                                         </div>
                                         <div className="space-y-1">
                                             <label className="text-[10px] font-black text-outline dark:text-slate-400 uppercase tracking-widest">Clinic Branch</label>
-                                            <select value={data.branch} onChange={e => setData('branch', e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg text-sm px-4 py-2.5 focus:ring-2 focus:ring-primary/20 outline-none">
+                                            <select list="branch-suggestions" value={data.branch} onChange={e => setData('branch', e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg text-sm px-4 py-2.5 focus:ring-2 focus:ring-primary/20 outline-none">
                                                 <option value="">Select Branch...</option>
+                                                {suggestions.branches.map(branch => (
+                                                    <option key={branch} value={branch}>{branch}</option>
+                                                ))}
                                                 <option value="Downtown">Downtown</option>
                                                 <option value="North Side">North Side</option>
                                                 <option value="East Side">East Side</option>
@@ -809,6 +813,17 @@ export default function Clients(props) {
                     </div>
                 )}
             </div>
+            {/* Autocomplete Datalists */}
+            <datalist id="breed-suggestions">
+                {suggestions.breeds.map(breed => (
+                    <option key={breed} value={breed} />
+                ))}
+            </datalist>
+            <datalist id="vet-suggestions">
+                {suggestions.veterinarians.map(vet => (
+                    <option key={vet} value={vet} />
+                ))}
+            </datalist>
         </AppLayout>
     );
 }

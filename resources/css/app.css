@@ -30,3 +30,49 @@
         @apply text-slate-400 dark:text-slate-500 font-bold;
     }
 }
+
+@media print {
+    .no-print, 
+    nav, 
+    button, 
+    .pagination-controls,
+    header,
+    aside,
+    [role="navigation"],
+    .flex.items-center.gap-2.text-\[10px\].font-bold {
+        display: none !important;
+    }
+    
+    body {
+        background: white !important;
+        color: black !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .max-w-\[1720px\] {
+        max-width: 100% !important;
+        padding: 1cm !important;
+        margin: 0 !important;
+    }
+
+    .grid {
+        display: block !important;
+    }
+
+    .lg\:col-span-8, .lg\:col-span-4 {
+        width: 100% !important;
+        margin-bottom: 3rem !important;
+        page-break-inside: avoid;
+    }
+
+    /* Force background colors to print */
+    .bg-white, .bg-slate-50, .dark\:bg-slate-900 {
+        background-color: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+    }
+
+    .text-primary, .dark\:text-teal-400 {
+        color: #0f172a !important;
+    }
+}

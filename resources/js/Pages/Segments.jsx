@@ -1,5 +1,5 @@
 import AppLayout from '@/Layouts/AppLayout';
-import { Head, useForm, router } from '@inertiajs/react';
+import { Head, useForm, router, Link } from '@inertiajs/react';
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
@@ -338,9 +338,13 @@ export default function Segments({ campaigns = [], templates = [], segments = []
                                                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase ${p.status === 'Active' ? 'bg-teal-50 text-teal-600' : 'bg-orange-50 text-orange-600'}`}>{p.status}</span>
                                             </td>
                                             <td className="px-6 py-4 text-right">
-                                                <button className="p-2 text-slate-400 hover:text-primary transition-all opacity-0 group-hover:opacity-100">
+                                                <Link 
+                                                    href={route('clients')} 
+                                                    data={{ search: p.name }}
+                                                    className="p-2 text-slate-400 hover:text-primary transition-all opacity-0 group-hover:opacity-100 inline-block"
+                                                >
                                                     <span className="material-symbols-outlined text-sm">open_in_new</span>
-                                                </button>
+                                                </Link>
                                             </td>
                                         </tr>
                                     ))}

@@ -46,10 +46,19 @@ class PatientController extends Controller
         $internalColumns = ['id', 'created_at', 'updated_at', 'deleted_at'];
         $displayColumns = array_values(array_diff($columns, $internalColumns));
 
+        // Fetch recommendations/suggestions
+        $suggestions = [
+            'breeds' => Patient::whereNotNull('breed')->distinct()->pluck('breed')->toArray(),
+            'veterinarians' => Patient::whereNotNull('assigned_veterinarian')->distinct()->pluck('assigned_veterinarian')->toArray(),
+            'branches' => Patient::whereNotNull('branch')->distinct()->pluck('branch')->toArray(),
+            'statuses' => Patient::whereNotNull('status')->distinct()->pluck('status')->toArray(),
+        ];
+
         return Inertia::render('Clients', [
             'patients' => $query->paginate(15)->withQueryString(),
             'availableColumns' => $displayColumns,
             'queryParams' => $request->all(),
+            'suggestions' => $suggestions,
         ]);
     }
 

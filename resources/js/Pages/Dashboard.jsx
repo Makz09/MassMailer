@@ -72,10 +72,10 @@ export default function Dashboard({ stats = {}, recent_patients = [], upcoming_c
                                 <thead className="bg-slate-50 dark:bg-slate-800/50 text-on-surface-variant dark:text-slate-400 font-label-md text-label-md">
                                     <tr>
                                         <th className="px-6 py-3 border-b border-outline-variant dark:border-slate-800">PATIENT NAME</th>
-                                        <th className="px-6 py-3 border-b border-outline-variant dark:border-slate-800">BREED</th>
+                                        <th className="px-6 py-3 border-b border-outline-variant dark:border-slate-800">OWNER & CONTACT</th>
+                                        <th className="px-6 py-3 border-b border-outline-variant dark:border-slate-800 text-center">VITAL STATS</th>
                                         <th className="px-6 py-3 border-b border-outline-variant dark:border-slate-800">STATUS</th>
                                         <th className="px-6 py-3 border-b border-outline-variant dark:border-slate-800">HEALTH</th>
-                                        <th className="px-6 py-3 border-b border-outline-variant dark:border-slate-800 text-right">ACTION</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-outline-variant dark:divide-slate-800">
@@ -84,6 +84,11 @@ export default function Dashboard({ stats = {}, recent_patients = [], upcoming_c
                                             key={patient.id}
                                             name={patient.name} 
                                             breed={patient.breed} 
+                                            ownerName={patient.owner_name}
+                                            email={patient.owner_email}
+                                            phone={patient.owner_phone}
+                                            age={patient.age_years}
+                                            weight={patient.weight_kg}
                                             status={patient.status} 
                                             statusColor={patient.status === 'Critical' ? 'bg-red-100 text-red-800' : 'bg-emerald-100 text-emerald-800'}
                                             score={patient.health_score}
@@ -165,7 +170,7 @@ export default function Dashboard({ stats = {}, recent_patients = [], upcoming_c
     );
 }
 
-function PatientRow({ name, breed, status, statusColor, score }) {
+function PatientRow({ name, breed, ownerName, email, phone, age, weight, status, statusColor, score }) {
     return (
         <tr className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors">
             <td className="px-6 py-5">
@@ -179,7 +184,29 @@ function PatientRow({ name, breed, status, statusColor, score }) {
                     </div>
                 </div>
             </td>
-            <td className="px-6 py-4 font-body-sm text-body-sm dark:text-slate-300">{breed}</td>
+            <td className="px-6 py-4">
+                <div className="space-y-0.5">
+                    <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">{ownerName}</p>
+                    <div className="flex flex-col">
+                        <span className="text-[10px] text-slate-500 dark:text-slate-500 flex items-center gap-1">
+                            <span className="material-symbols-outlined text-[12px]">mail</span>
+                            {email}
+                        </span>
+                        {phone && (
+                            <span className="text-[10px] text-slate-400 dark:text-slate-500 flex items-center gap-1">
+                                <span className="material-symbols-outlined text-[12px]">call</span>
+                                {phone}
+                            </span>
+                        )}
+                    </div>
+                </div>
+            </td>
+            <td className="px-6 py-4 text-center">
+                <div className="flex flex-col items-center">
+                    <span className="text-sm font-bold text-slate-700 dark:text-slate-300">{age} yrs</span>
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">{weight} kg</span>
+                </div>
+            </td>
             <td className="px-6 py-4">
                 <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${statusColor}`}>{status}</span>
             </td>
@@ -190,11 +217,6 @@ function PatientRow({ name, breed, status, statusColor, score }) {
                     </div>
                     <span className="text-[10px] font-bold dark:text-slate-300">{score}%</span>
                 </div>
-            </td>
-            <td className="px-6 py-4 text-right">
-                <button className="text-slate-400 hover:text-primary dark:hover:text-teal-400">
-                    <span className="material-symbols-outlined">more_vert</span>
-                </button>
             </td>
         </tr>
     );
