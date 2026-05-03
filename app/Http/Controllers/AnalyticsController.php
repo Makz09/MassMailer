@@ -35,8 +35,6 @@ class AnalyticsController extends Controller
         }
 
         $totalRecipients = Campaign::when($dateFilter, fn($q) => $q->where('created_at', '>=', $dateFilter))->sum('total_recipients');
-        $totalOpens = Campaign::when($dateFilter, fn($q) => $q->where('created_at', '>=', $dateFilter))->sum('opens');
-        $totalBookings = Campaign::when($dateFilter, fn($q) => $q->where('created_at', '>=', $dateFilter))->sum('bookings');
 
         // Calculate Busiest Day
         $busiestDayData = Appointment::select(DB::raw('DATE(start_time) as date'), DB::raw('count(*) as count'))

@@ -27,6 +27,12 @@ export default function Calendar({
         description: '',
     });
 
+    const parseDate = (dateString) => {
+        if (!dateString) return null;
+        // Remove 'Z' and milliseconds to treat as local time
+        return new Date(dateString.replace('Z', '').split('.')[0]);
+    };
+
     const openCreateModal = (date) => {
         reset();
         if (date) {
@@ -153,7 +159,7 @@ export default function Calendar({
     const getAppointmentsForDate = (date) => {
         if (!date) return [];
         return appointments.filter(apt => {
-            const aptDate = new Date(apt.start_time);
+            const aptDate = parseDate(apt.start_time);
             return aptDate.getFullYear() === date.getFullYear() &&
                    aptDate.getMonth() === date.getMonth() &&
                    aptDate.getDate() === date.getDate() &&
@@ -166,8 +172,8 @@ export default function Calendar({
 
     const upcomingAppointmentsData = useMemo(() => {
         const filtered = [...appointments]
-            .filter(apt => new Date(apt.start_time) >= new Date() && isVisible(apt))
-            .sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
+            .filter(apt => parseDate(apt.start_time) >= new Date() && isVisible(apt))
+            .sort((a, b) => parseDate(a.start_time) - parseDate(b.start_time));
         
         return {
             items: filtered.slice(agendaPage * AGENDA_PAGE_SIZE, (agendaPage + 1) * AGENDA_PAGE_SIZE),
@@ -187,7 +193,7 @@ export default function Calendar({
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
         return appointments.filter(apt => {
-            const d = new Date(apt.start_time);
+            const d = parseDate(apt.start_time);
             return d.getFullYear() === year && d.getMonth() === month && isVisible(apt);
         }).length;
     }, [appointments, currentDate, filters]);
@@ -326,7 +332,7 @@ export default function Calendar({
                                          key={apt.id}
                                          color={apt.type === 'surgery' ? 'bg-secondary' : 'bg-primary'} 
                                          title={`${apt.title}: '${apt.patient?.name || 'Guest'}'`} 
-                                         time={`${new Date(apt.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`} 
+                                         time={`${parseDate(apt.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`} 
                                          onClick={(e) => openViewModal(e, apt)}
                                      />
                                  ))}
@@ -540,10 +546,10 @@ export default function Calendar({
                                 <div>
                                     <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Schedule</p>
                                     <p className="text-on-surface dark:text-teal-50 font-bold">
-                                        {new Date(selectedAppointment.start_time).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+                                        {parseDate(selectedAppointment.start_time).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
                                     </p>
                                     <p className="text-sm text-slate-500 dark:text-slate-400">
-                                        {new Date(selectedAppointment.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        {parseDate(selectedAppointment.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </p>
                                 </div>
                             </div>

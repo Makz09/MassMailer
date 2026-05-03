@@ -13,6 +13,7 @@ Route::get('/', function () {
 Route::get('/search', [\App\Http\Controllers\SearchController::class, 'query'])->middleware(['auth', 'verified'])->name('search');
 
 Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard/audit', [\App\Http\Controllers\DashboardController::class, 'generateAudit'])->middleware(['auth', 'verified'])->name('dashboard.audit');
 
 Route::get('/campaigns', [\App\Http\Controllers\CampaignController::class, 'index'])->middleware(['auth', 'verified'])->name('campaigns');
 Route::post('/campaigns/preview', [\App\Http\Controllers\CampaignController::class, 'preview'])->middleware(['auth', 'verified'])->name('campaigns.preview');
@@ -48,9 +49,10 @@ Route::delete('/templates/{template}', [\App\Http\Controllers\TemplateController
 
 Route::get('/analytics', [\App\Http\Controllers\AnalyticsController::class, 'index'])->middleware(['auth', 'verified'])->name('analytics');
 
-Route::get('/reports', function () {
-    return Inertia::render('Reports');
-})->middleware(['auth', 'verified'])->name('reports');
+Route::get('/reports', [\App\Http\Controllers\ReportsController::class, 'index'])->middleware(['auth', 'verified'])->name('reports');
+Route::get('/reports/download/master', [\App\Http\Controllers\ReportsController::class, 'downloadMasterLog'])->middleware(['auth', 'verified'])->name('reports.download.master');
+Route::get('/reports/download/campaigns', [\App\Http\Controllers\ReportsController::class, 'downloadCampaignReport'])->middleware(['auth', 'verified'])->name('reports.download.campaigns');
+Route::get('/reports/download/growth', [\App\Http\Controllers\ReportsController::class, 'downloadGrowthReport'])->middleware(['auth', 'verified'])->name('reports.download.growth');
 
 Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->middleware(['auth', 'verified'])->name('settings');
 Route::post('/settings/clinic', [\App\Http\Controllers\SettingsController::class, 'updateClinic'])->middleware(['auth', 'verified'])->name('settings.clinic.update');

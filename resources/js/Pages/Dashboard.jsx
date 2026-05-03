@@ -1,13 +1,56 @@
 import AppLayout from '@/Layouts/AppLayout';
 import MetricCard from '@/Components/MetricCard';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
 
 export default function Dashboard({ stats = {}, recent_patients = [], upcoming_campaigns = [] }) {
+    const { flash } = usePage().props;
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+
+    // Sync toast with flash message
+    useEffect(() => {
+        if (flash.success) {
+            setToastMessage(flash.success);
+            setShowToast(true);
+            const timer = setTimeout(() => setShowToast(false), 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [flash.success]);
+
+    const handleGenerateAudit = () => {
+        setIsGenerating(true);
+        window.location.href = route('dashboard.audit');
+        
+        setTimeout(() => {
+            setIsGenerating(false);
+            setToastMessage('Diabetic Patient Audit has been generated and downloaded successfully.');
+            setShowToast(true);
+            setTimeout(() => setShowToast(false), 5000);
+        }, 2000);
+    };
+
     return (
         <AppLayout>
             <Head title="Marketing Dashboard" />
             
-            <div className="max-w-[1720px] mx-auto px-10 pt-8 pb-10 font-manrope">
+            <div className="max-w-[1720px] mx-auto px-10 pt-8 pb-10 font-manrope relative">
+                {/* Success Toast */}
+                {showToast && (
+                    <div className="fixed top-24 right-10 z-[100] bg-emerald-600 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 animate-in fade-in slide-in-from-right-10 duration-500">
+                        <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                            <span className="material-symbols-outlined text-sm">done_all</span>
+                        </div>
+                        <div>
+                            <p className="font-bold text-sm">Action Successful</p>
+                            <p className="text-[11px] opacity-90">{toastMessage}</p>
+                        </div>
+                        <button onClick={() => setShowToast(false)} className="ml-4 opacity-60 hover:opacity-100 transition-opacity">
+                            <span className="material-symbols-outlined text-sm">close</span>
+                        </button>
+                    </div>
+                )}
                 <header className="mb-10">
                     <div className="flex justify-between items-center w-full">
                         <div className="space-y-1">
@@ -21,6 +64,109 @@ export default function Dashboard({ stats = {}, recent_patients = [], upcoming_c
                         </div>
                     </div>
                 </header>
+
+                {/* Health & Growth Ribbon */}
+                <div className="bg-[#0B1219] dark:bg-slate-900 rounded-2xl border border-slate-800 shadow-2xl mb-8 relative">
+                    <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-800/50">
+                        {/* Section 1: Health Milestones */}
+                        <div className="p-6 flex flex-col justify-center group/tooltip relative">
+                            <div className="flex items-center gap-2 mb-4">
+                                <span className="material-symbols-outlined text-teal-400 text-sm">health_metrics</span>
+                                <h6 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Health Milestones</h6>
+                                <span className="material-symbols-outlined text-[14px] text-slate-600 cursor-help hover:text-teal-400 transition-colors">info</span>
+                                
+                                {/* Tooltip Content */}
+                                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full mb-2 w-64 p-3 bg-slate-800 text-white text-[10px] rounded-lg shadow-2xl border border-slate-700 opacity-0 group-hover/tooltip:opacity-100 pointer-events-none transition-all z-50">
+                                    <p className="font-bold mb-1 text-teal-400">Health Tracking Logic:</p>
+                                    <ul className="space-y-1 text-slate-300">
+                                        <li>• <span className="text-white">Vaccination:</span> % of patients with any recorded vaccination date.</li>
+                                        <li>• <span className="text-white">Senior Wellness:</span> % of patients aged 10+ with a visit in the last 180 days.</li>
+                                    </ul>
+                                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 rotate-45 w-2 h-2 bg-slate-800 border-r border-b border-slate-700"></div>
+                                </div>
+                            </div>
+                            <div className="space-y-4">
+                                <div>
+                                    <div className="flex justify-between text-[11px] font-bold mb-1.5">
+                                        <span className="text-slate-300">Vaccination Coverage</span>
+                                        <span className="text-teal-400">{stats.vaccination_coverage}%</span>
+                                    </div>
+                                    <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                                        <div className="h-full bg-teal-500 rounded-full" style={{ width: `${stats.vaccination_coverage}%` }}></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="flex justify-between text-[11px] font-bold mb-1.5">
+                                        <span className="text-slate-300">Senior Wellness</span>
+                                        <span className="text-teal-400">{stats.senior_wellness_checks}%</span>
+                                    </div>
+                                    <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                                        <div className="h-full bg-teal-500 rounded-full shadow-[0_0_10px_rgba(20,184,166,0.3)]" style={{ width: `${stats.senior_wellness_checks}%` }}></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Section 2: New Registrations */}
+                        <div className="p-6 flex items-center justify-between group relative group/reg">
+                            <div className="space-y-1">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <h6 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">System Growth</h6>
+                                    <span className="material-symbols-outlined text-[14px] text-slate-600 cursor-help hover:text-teal-400 transition-colors">info</span>
+                                    
+                                    {/* Tooltip Content */}
+                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full mb-2 w-48 p-3 bg-slate-800 text-white text-[10px] rounded-lg shadow-2xl border border-slate-700 opacity-0 group-hover/reg:opacity-100 pointer-events-none transition-all z-50">
+                                        <p className="font-bold mb-1 text-teal-400">Growth Tracking:</p>
+                                        <p className="text-slate-300">Total number of patients created in the database since Monday 12:00 AM.</p>
+                                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 rotate-45 w-2 h-2 bg-slate-800 border-r border-b border-slate-700"></div>
+                                    </div>
+                                </div>
+                                <div className="flex items-baseline gap-3">
+                                    <span className="text-4xl font-headline-lg text-white leading-none">+{stats.new_registrations}</span>
+                                    <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-tighter bg-emerald-500/10 px-2 py-0.5 rounded">This Week</span>
+                                </div>
+                                <p className="text-[10px] text-slate-500 font-medium">New patients joined the clinic</p>
+                            </div>
+                            <div className="shrink-0 p-3 rounded-xl bg-teal-500/5 border border-teal-500/10 group-hover:scale-110 transition-transform">
+                                <span className="material-symbols-outlined text-teal-500 text-3xl">person_add</span>
+                            </div>
+                        </div>
+
+                        {/* Section 3: Quick Action */}
+                        <div className="p-6 bg-teal-950/20 flex flex-col justify-between relative group group/action rounded-br-2xl md:rounded-tr-2xl">
+                            <div className="relative z-10">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <h6 className="text-[10px] font-black text-teal-400/60 uppercase tracking-[0.2em]">Priority Action</h6>
+                                    <span className="material-symbols-outlined text-[14px] text-teal-400/30 cursor-help hover:text-teal-400 transition-colors">info</span>
+                                    
+                                    {/* Tooltip Content */}
+                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full mb-2 w-48 p-3 bg-slate-800 text-white text-[10px] rounded-lg shadow-2xl border border-slate-700 opacity-0 group-hover/action:opacity-100 pointer-events-none transition-all z-50">
+                                        <p className="font-bold mb-1 text-teal-400">Automated Audit:</p>
+                                        <p className="text-slate-300">Scans all patients for 'Diabetes' in medical history and generates a missing-checkup report.</p>
+                                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 rotate-45 w-2 h-2 bg-slate-800 border-r border-b border-slate-700"></div>
+                                    </div>
+                                </div>
+                                <p className="text-xs font-medium text-slate-300 leading-relaxed mb-4">Run health audit report for all Diabetic patients.</p>
+                                <button 
+                                    onClick={handleGenerateAudit}
+                                    disabled={isGenerating}
+                                    className={`w-full bg-white text-[#084C4B] py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-teal-50 transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2 ${isGenerating ? 'opacity-50 cursor-wait' : ''}`}
+                                >
+                                    {isGenerating ? (
+                                        <>
+                                            <span className="material-symbols-outlined text-[14px] animate-spin">progress_activity</span>
+                                            Processing...
+                                        </>
+                                    ) : (
+                                        'Generate Audit'
+                                    )}
+                                </button>
+                            </div>
+                            {/* Decorative background icon */}
+                            <span className="absolute -right-4 -bottom-6 material-symbols-outlined text-[120px] text-teal-500/5 group-hover:rotate-12 transition-transform pointer-events-none">analytics</span>
+                        </div>
+                    </div>
+                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                     <MetricCard 
@@ -127,8 +273,18 @@ export default function Dashboard({ stats = {}, recent_patients = [], upcoming_c
                                 Monthly Goal
                             </h5>
                             <div className="space-y-4">
-                                <div className="flex justify-between items-center text-sm">
-                                    <span className="text-on-surface-variant dark:text-slate-400">Campaign Success Rate</span>
+                                <div className="flex justify-between items-center text-sm relative group/reach">
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="text-on-surface-variant dark:text-slate-400">Monthly Reach Goal</span>
+                                        <span className="material-symbols-outlined text-[14px] text-slate-400 cursor-help hover:text-teal-400 transition-colors">info</span>
+                                        
+                                        {/* Tooltip Content */}
+                                        <div className="absolute bottom-full left-0 mb-2 w-48 p-3 bg-slate-800 text-white text-[10px] rounded-lg shadow-2xl border border-slate-700 opacity-0 group-hover/reach:opacity-100 pointer-events-none transition-all z-50">
+                                            <p className="font-bold mb-1 text-teal-400">Audience Reach:</p>
+                                            <p className="text-slate-300 leading-relaxed">Tracks the percentage of your total patient database reached via email campaigns this month.</p>
+                                            <div className="absolute top-full left-4 -translate-y-1/2 rotate-45 w-2 h-2 bg-slate-800 border-r border-b border-slate-700"></div>
+                                        </div>
+                                    </div>
                                     <span className="font-bold text-primary dark:text-teal-400">{stats.monthly_success_rate || 0}% / 50%</span>
                                 </div>
                                 <div className="w-full h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
@@ -139,27 +295,30 @@ export default function Dashboard({ stats = {}, recent_patients = [], upcoming_c
                                 </div>
                                 <p className="text-[10px] text-slate-400 leading-tight">
                                     {(stats.monthly_success_rate || 0) >= 50 
-                                        ? "Great job! You've surpassed this month's engagement goal." 
+                                        ? "Great job! You've surpassed this month's audience reach goal." 
                                         : `You're ${Math.max(0, 50 - (stats.monthly_success_rate || 0))}% away from your monthly target. Keep it up!`}
                                 </p>
                             </div>
                         </div>
 
                         <div className="bg-surface-container-lowest dark:bg-slate-900 p-6 rounded-xl border border-outline-variant dark:border-slate-800 shadow-sm">
-                            <h5 className="font-semibold text-primary dark:text-teal-50 mb-4">Upcoming Schedule</h5>
+                            <div className="flex items-center justify-between mb-4">
+                                <h5 className="font-semibold text-primary dark:text-teal-50">Upcoming Schedule</h5>
+                                <Link href={route('calendar')} className="text-xs font-bold text-teal-600 hover:text-teal-700 transition-colors">View More</Link>
+                            </div>
                             <div className="space-y-4">
                                 {upcoming_campaigns.length > 0 ? (
-                                    upcoming_campaigns.map((camp) => (
+                                    upcoming_campaigns.map((item) => (
                                         <ScheduleItem 
-                                            key={camp.id}
-                                            month={camp.month} 
-                                            day={camp.day} 
-                                            title={camp.name} 
-                                            desc={`${camp.type} • ${camp.recipients} rec.`} 
+                                            key={item.id}
+                                            month={item.month} 
+                                            day={item.day} 
+                                            title={item.name} 
+                                            desc={item.desc} 
                                         />
                                     ))
                                 ) : (
-                                    <p className="text-slate-400 italic text-sm">No upcoming campaigns scheduled.</p>
+                                    <p className="text-slate-400 italic text-sm">No upcoming campaigns or appointments.</p>
                                 )}
                             </div>
                         </div>
